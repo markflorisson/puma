@@ -1,5 +1,13 @@
-define del_t; 
 
+/*
+	required input:	land[][], puma_init[][], hare_init[][]
+
+	required output: puma[][] * del_t, hare[][] * del_t
+*/
+
+
+
+define del_t; 
 function compute
 param: float[][] puma, hare;
 Begin 
