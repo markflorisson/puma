@@ -1,0 +1,31 @@
+define del_t; 
+
+function compute
+param: float[][] puma, hare;
+Begin 
+declare float[][] puma_new, hare_new;
+for k = 0 to max_t 
+{
+	for i = 0 to Nx - 1
+	  for j = 0 to Ny - 1
+	    if(puma[i][j] != -1) /* if is water */
+	    {
+		define p_top, p_bottom, p_left, p_right;
+		define n = 4;
+		if(puma[i-1][j] == -1)
+		{
+		  p_top = 0;
+		  n--;
+		}
+		else
+		  p_top = puma[i-1][j];
+		....
+		puma_new[i][j] = puma[i][j] + del_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] + l * (p_top + p_bottom + p_left + p_right) - n * puma [i][j]);
+		hare_new[i][j] = ...'
+	    }
+    /* output the two arrays */
+    /* replace the arrays */
+    hare = hare_new;
+    puma = puma_new;
+}
+
