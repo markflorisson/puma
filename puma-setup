@@ -3,3 +3,4 @@
 export PROJ_HOME=$HOME/puma
 export PROJ_INCLUDE=$PROJ_HOME/include
 export PROJ_BIN=$PROJ_HOME/bin
+export PROJ_LOG=$PROJ_HOME/log

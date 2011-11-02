@@ -17,4 +17,14 @@ debug_msg(const char* msg, ...)
 	va_end(list);
 }
 
+static void
+error_msg(const char* msg, ...)
+{
+    va_list list;
+
+    va_start(list,msg);
+    vfprintf(stderr,msg,list);
+    va_end(list);
+}
+
 #endif
