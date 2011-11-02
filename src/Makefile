@@ -1,41 +1,31 @@
+MF=	Makefile
+
 #CC=pgcc
-CC=gcc
-CFLAGS=	-g -I$(INCLUDE_DIR) -DDEBUG
+CC=cc
+CFLAGS=	-g -I$(PROJ_HOME)/include -DDEBUG
 LFLAGS= -lm
 
-INCLUDE_DIR=../include
-BIN_DIR=../bin
-
-EXE=$(BIN_DIR)/puma
+EXE=puma
 
 SRC= \
-    puma.c \
+	main.c \
 	io.c \
-	main.c
+	puma.c
 
 .SUFFIXES:
 .SUFFIXES: .c .o
 
-# OBJ=$(SRC:.c=.o)
-OBJ=$(addprefix $(BIN_DIR)/, $(SRC:.c=.o))
-
-MF=Makefile
+OBJ=	$(SRC:.c=.o)
 
 .c.o:
-	$(CC) $(CFLAGS) -c $< -o $(BIN_DIR)/$<
+	$(CC) $(CFLAGS) -c $<
 
-all:    $(EXE)
+all:	$(EXE)
 
-$(EXE): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LFLAGS)
+$(EXE):	$(OBJ)
+	$(CC) $(FFLAGS) -o $@ $(OBJ) $(LFLAGS)
 
-$(OBJ): $(SRC)
-$(SRC): $(MF) $(INC)
-	$(CC) $(CFLAGS) -c $@ -o $(BIN_DIR)/$(@:.c=.o)
-
-#$(SRC): $(MF)
-#	$(CC) $(CFLAGS) -c $< -o $(BIN_DIR)/$<
-
+$(OBJ):	$(MF) $(INC)
 
 clean:
 	rm -f $(OBJ) $(EXE) core
