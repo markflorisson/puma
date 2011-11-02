@@ -47,12 +47,9 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     }
 }
 
-int main(void)
+/*int main(void)
 {
 
-    /*int land[NX][NY];
-    double hare[NX][NY], puma[NX][NY];
-    */
     double r, a, k, b, m, l, delta_t;
     int i, j, nx, ny;
     delta_t = 0.4;
@@ -106,4 +103,4 @@ int main(void)
         }
         printf("\n");
     }
-}
+}*/
