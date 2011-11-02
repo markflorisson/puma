@@ -1,3 +1,5 @@
 #run setup before compiling
 
 export PROJ_HOME=$HOME/puma
+export PROJ_INCLUDE=$PROJ_HOME/include
+export PROJ_BIN=$PROJ_HOME/bin

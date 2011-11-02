@@ -1,8 +1,7 @@
 MF=	Makefile
 
-#CC=pgcc
 CC=cc
-CFLAGS=	-g -I$(PROJ_HOME)/include -DDEBUG
+CFLAGS=	-g -I$(PROJ_INCLUDE) -DDEBUG
 LFLAGS= -lm
 
 EXE=puma
