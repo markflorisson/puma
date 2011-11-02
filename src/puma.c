@@ -10,5 +10,8 @@ static char *error_messages[] = {
 char *
 puma_strerror(int puma_errno)
 {
+    if (puma_errno == PUMA_OSERROR)
+        return strerror(errno);
+
     return error_messages[puma_errno];
 }

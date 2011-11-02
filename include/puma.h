@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <log.h>
 #include <math.h>
-
+#include <errno.h>
+#include <string.h>
 
 /* All the puma errnos. A description can be obtained using puma_strerror(myerrno) */
 enum puma_errors {
