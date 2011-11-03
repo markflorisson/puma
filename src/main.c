@@ -5,19 +5,26 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "log.h"
 #include "puma.h"
 
-int logFd = 0; /* File descriptor for log file */
-int map[NX][NY]; /* Matrix with land and water bitmask */
-
 static void initLogFile();
+static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj);
 
 int 
-main(void)
+main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
+	EquationVariables eqn_obj;
 
 	initLogFile();
+
+	/* usage: ./puma -r <rate of prey population increase> -a <predation rate coefficient> 
+			-b <reproduction rate of predators> -m <predator mortality rate> 
+			-k <diffusion rate of hares> -l <diffusion rate of predators> 
+	*/
+	parseCommandLine(argc, argv, &eqn_obj);
+			 
 
 	/* TODO:
 		1. Get command line input. use getopt to parse it
@@ -30,39 +37,44 @@ main(void)
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
 
-	debug_msg("%d %d %d\n", map[0][0], map[49][49], map[17][17]);
 
-	
-
-	/* TODO: close log file here  */
-
+	close(log_fd);
 	return 0;
 }
 
-void initLogFile()
+void
+parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 {
-	const char *logPath = getenv("PROJ_LOG");
-	const char *logFile = "puma.log";
+
+
+}
+
+void 
+initLogFile()  /* TODO: Put this in log.c */
+{
+
+	const char *log_path = getenv("PROJ_LOG");
+	const char *log_file = "puma.log";
 
 	char buf[128] = {'\0'};
 
-	if(logPath == NULL) {
+	if(log_path == NULL) {
 		fprintf(stderr,"[%s:%d]: Environment not setup\n",__FILE__,__LINE__);
 		exit(1);
 	}
 	
-	strcpy(buf,logPath);
+	strcpy(buf,log_path);
 	strcat(buf,"/");	
-	strcat(buf,logFile);	
+	strcat(buf,log_file);	
 	
-	logFd = open(buf,O_CREAT|O_RDWR|O_APPEND,S_IRUSR|S_IWUSR);
-	if(-1 == logFd) {
+	log_fd = open(buf,O_CREAT|O_RDWR|O_APPEND,S_IRUSR|S_IWUSR);
+	if(-1 == log_fd) {
 		fprintf(stderr,"%s\n",puma_strerror(PUMA_OSERROR));	
 	}
 	
 	/* Redirect stdout and stderr to the log file */	
 
-	dup2(logFd,STDOUT_FILENO);
-	dup2(logFd,STDERR_FILENO);
+	dup2(log_fd,STDOUT_FILENO);
+	dup2(log_fd,STDERR_FILENO);
 
 }

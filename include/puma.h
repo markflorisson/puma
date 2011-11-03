@@ -1,8 +1,9 @@
+#ifndef _PUMA_H
+
 #define NX 2000
 #define NY NX
 
 #include <stdio.h>
-#include <log.h>
 #include <math.h>
 #include <errno.h>
 #include <string.h>
@@ -16,6 +17,19 @@ enum puma_errors {
 };
 
 char *puma_strerror(int);
+int map[NX][NY]; /* Matrix with land and water bitmask */
+
+typedef struct EquationVariables
+{
+        float prey_pop_inc_rate;
+        float pred_rate_coeff;
+        float rep_date_pred;
+        float pred_mort_rate;
+        float diff_rate_hares;
+        float diff_rate_pred;
+
+}EquationVariables;
+
 int readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp);
 
 #if __STDC_VERSION__ >= 199901L
@@ -23,3 +37,5 @@ int readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp);
 #elif __GNUC__
     #define PUMA_INLINE __inline__
 #endif
+
+#endif /* for _PUMA_H */

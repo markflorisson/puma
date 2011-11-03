@@ -4,15 +4,17 @@
 #include <stdarg.h>
 #include <time.h>
 
-static char *
-getTimeStamp(char *timeStamp)
+int log_fd; /* File descriptor for log file */
+
+static char*
+getTimeStamp(char *time_stamp)
 {
-	time_t currentTime;
+	time_t current_time;
 
-	currentTime = time(0);
-	strftime(timeStamp,9,"%H:%M:%S",localtime(&currentTime));
+	current_time = time(0);
+	strftime(time_stamp,9,"%H:%M:%S",localtime(&current_time));
 
-	return(timeStamp);
+	return(time_stamp);
 }
 
 
@@ -21,17 +23,17 @@ static void
 debug_msg(const char* msg, ...)
 {
 	va_list list;
-	char timeStamp[16] = {'\0'};
+	char time_stamp[16] = {'\0'};
+	char line[4096] = {'\0'};
 	
-	getTimeStamp(timeStamp);
+	getTimeStamp(time_stamp);
 
 	va_start(list,msg);
 #ifdef DEBUG
-	fprintf(stdout,"%s:",timeStamp);
-	vfprintf(stdout,msg,list);
+	sprintf(line,"%s:%s",time_stamp,msg);	
+	vfprintf(stdout,line,list);
 	fflush(stdout);
 #endif
-
 	va_end(list);
 }
 
@@ -39,14 +41,15 @@ static void
 error_msg(const char* msg, ...)
 {
 	va_list list;
-	char timeStamp[16] = {'\0'};
+	char time_stamp[16] = {'\0'};
+	char line[4096] = {'\0'};
 	
-	getTimeStamp(timeStamp);
+	getTimeStamp(time_stamp);
 
 	va_start(list,msg);
 
-	fprintf(stderr,"%s:",timeStamp);
-	vfprintf(stderr,msg,list);
+	sprintf(line,"%s:%s",time_stamp,msg);	
+	vfprintf(stderr,line,list);
 
 	va_end(list);
 }

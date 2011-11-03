@@ -26,5 +26,8 @@ $(EXE):	$(OBJ)
 
 $(OBJ):	$(MF) $(INC)
 
+all: 
+	cp -f $(EXE) $(PROJ_BIN)
+
 clean:
 	rm -f $(OBJ) $(EXE) core
