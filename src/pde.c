@@ -20,21 +20,22 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     for (i = 1; i < nx - 1; i++)
     {
         for (j = 1; j < ny - 1; j++)
-        {
-            /* If cell[i][j] is land, compute the new value of hare and puma.*/
-            if (land[i][j] == 1)
-            {
-                int n = land[i - 1][j] + land[i + 1][j] + land[i][j - 1] + land[i][j + 1];
-                hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] + 
-                    k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));
-                puma_new[i][j] = puma[i][j] + delta_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] + 
-                    l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
-                
+	{
+		/* If cell[i][j] is land, compute the new value of hare and puma.*/
+		if (land[i][j] == 0) continue;
 
-            }
-            /* If cell[i][j] is water, do nothing. */
+		int n = land[i - 1][j] + land[i + 1][j] + land[i][j - 1] + land[i][j + 1];
 
-        }
+		hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] + 
+				k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));
+
+		puma_new[i][j] = puma[i][j] + delta_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] + 
+				l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
+
+
+		/* If cell[i][j] is water, do nothing. */
+
+	}
     }
     /*` Replace the old hare and puma matrices by the new two. */
     for (i = 1; i < nx - 1; i++)

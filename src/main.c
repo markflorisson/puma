@@ -17,35 +17,92 @@ main(int argc, char *argv[])
 	int nx = 0, ny = 0, puma_errno = 0;
 	EquationVariables eqn_obj;
 
-	initLogFile();
+	memset(&eqn_obj,0,sizeof(eqn_obj));
 
-	/* usage: ./puma -r <rate of prey population increase> -a <predation rate coefficient> 
-			-b <reproduction rate of predators> -m <predator mortality rate> 
-			-k <diffusion rate of hares> -l <diffusion rate of predators> 
-	*/
 	parseCommandLine(argc, argv, &eqn_obj);
+	initLogFile();
 			 
-
 	/* TODO:
-		1. Get command line input. use getopt to parse it
-		2. fill the map matrix from i=1 and j=1, to add the halo region
-		3. write the logic to print ppm file
-		4. Integrate the computational kernel
+		1. write the logic to print ppm file
+		2. Integrate the computational kernel
 	*/
 
-	if (puma_errno = readmap(map, "small.dat", &nx, &ny)) {
+	if (puma_errno = readmap(map, "small.dat", &nx, &ny)) 
+	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
 
+	/* TODO: Call the compute kernel here */
+	
 
 	close(log_fd);
 	return 0;
 }
 
 void
+printUsage(char *argv[])
+{
+	fprintf(stdout,"Usage e.g.: %s <-r 0.08> <-a 0.04> <-b 0.02> <-m 0.06> <-k 0.2> <-l 0.2>\n",argv[0]); 
+	fprintf(stdout,"               -r : rate of prey population increase\n");
+	fprintf(stdout,"               -a : predation rate coefficient\n");
+	fprintf(stdout,"               -b : reproduction rate of predators\n");
+	fprintf(stdout,"               -m : predator mortality rate\n");
+	fprintf(stdout,"               -k : diffusion rate of hares\n");
+	fprintf(stdout,"               -l : diffusion rate of predators\n");
+}
+
+void
 parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 {
+	char ch = '\0';
+	
+	/* Set the defaults */
+        eqn_obj->prey_pop_inc_rate = 0.08;
+        eqn_obj->pred_rate_coeff = 0.04;
+        eqn_obj->rep_date_pred = 0.02;
+        eqn_obj->pred_mort_rate = 0.06;
+        eqn_obj->diff_rate_hares = 0.2;
+        eqn_obj->diff_rate_pred = 0.2;
 
+
+	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:")) != -1 )
+	{
+		switch(ch)
+		{
+			case 'h': /* help */
+				printUsage(argv);
+				exit(0);
+				break;
+
+			case 'r':
+				eqn_obj->prey_pop_inc_rate = atof(optarg);
+				break;
+
+			case 'a':
+				eqn_obj->pred_rate_coeff = atof(optarg);
+				break;
+
+			case 'b':
+				eqn_obj->rep_date_pred = atof(optarg);
+				break;
+
+			case 'm':
+				eqn_obj->pred_mort_rate = atof(optarg);
+				break;
+
+			case 'k':
+				eqn_obj->diff_rate_hares = atof(optarg);
+				break;
+
+			case 'l':
+				eqn_obj->diff_rate_pred = atof(optarg);
+				break;
+
+			default:
+				printf("Setting defaults for equations params\n");
+				break;
+		}
+	}
 
 }
 
@@ -58,7 +115,8 @@ initLogFile()  /* TODO: Put this in log.c */
 
 	char buf[128] = {'\0'};
 
-	if(log_path == NULL) {
+	if(log_path == NULL) 
+	{
 		fprintf(stderr,"[%s:%d]: Environment not setup\n",__FILE__,__LINE__);
 		exit(1);
 	}
@@ -73,8 +131,7 @@ initLogFile()  /* TODO: Put this in log.c */
 	}
 	
 	/* Redirect stdout and stderr to the log file */	
-
-	dup2(log_fd,STDOUT_FILENO);
-	dup2(log_fd,STDERR_FILENO);
+	//dup2(log_fd,STDOUT_FILENO);
+	//dup2(log_fd,STDERR_FILENO);
 
 }

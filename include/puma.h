@@ -31,6 +31,10 @@ typedef struct EquationVariables
 }EquationVariables;
 
 int readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp);
+int write_ppm_file(int map[NX][NX], double hare[NX][NY], double puma[NX][NY],
+			const int nx, const int ny, const int delta_t,
+			const int hare_density, const int puma_density);
+
 
 #if __STDC_VERSION__ >= 199901L
     #define PUMA_INLINE inline
