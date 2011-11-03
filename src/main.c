@@ -9,31 +9,31 @@
 #include "puma.h"
 
 static void initLogFile();
-static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj);
+static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_iter);
 
 int 
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
+	int i, max_iter = 0;
 	EquationVariables eqn_obj;
 
 	memset(&eqn_obj,0,sizeof(eqn_obj));
 
-	parseCommandLine(argc, argv, &eqn_obj);
+	parseCommandLine(argc, argv, &eqn_obj, &max_iter);
 	initLogFile();
-			 
-	/* TODO:
-		1. write the logic to print ppm file
-		2. Integrate the computational kernel
-	*/
 
 	if (puma_errno = readmap(map, "small.dat", &nx, &ny)) 
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
 
-	/* TODO: Call the compute kernel here */
-	
+
+	/* Invoke computational kernel */
+	for (i = 0; i < max_iter; i++)
+	{
+		compute(hare, puma, map, nx, ny, &eqn_obj);
+	}
 
 	close(log_fd);
 	return 0;
@@ -52,20 +52,21 @@ printUsage(char *argv[])
 }
 
 void
-parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
+parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_iter)
 {
 	char ch = '\0';
 	
 	/* Set the defaults */
+	*max_iter = 500;
         eqn_obj->prey_pop_inc_rate = 0.08;
         eqn_obj->pred_rate_coeff = 0.04;
-        eqn_obj->rep_date_pred = 0.02;
+        eqn_obj->rep_rate_pred = 0.02;
         eqn_obj->pred_mort_rate = 0.06;
         eqn_obj->diff_rate_hares = 0.2;
-        eqn_obj->diff_rate_pred = 0.2;
+        eqn_obj->diff_rate_pumas = 0.2;
 
 
-	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:")) != -1 )
+	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:i:")) != -1 )
 	{
 		switch(ch)
 		{
@@ -83,7 +84,7 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 				break;
 
 			case 'b':
-				eqn_obj->rep_date_pred = atof(optarg);
+				eqn_obj->rep_rate_pred = atof(optarg);
 				break;
 
 			case 'm':
@@ -95,7 +96,11 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 				break;
 
 			case 'l':
-				eqn_obj->diff_rate_pred = atof(optarg);
+				eqn_obj->diff_rate_pumas = atof(optarg);
+				break;
+
+			case 'i':
+				*max_iter = atoi(optarg);	
 				break;
 
 			default:

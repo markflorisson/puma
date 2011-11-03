@@ -78,7 +78,7 @@ paint_cell(FILE *file, int *pixel, const int nx, const int ny)
 }
 
 int 
-write_ppm_file(int map[NX][NX], double hare[NX][NY], double puma[NX][NY], 
+write_ppm_file(int map[NX][NX], Real hare[NX][NY], Real puma[NX][NY], 
 			const int nx, const int ny, const int delta_t,
 			const int hare_density, const int puma_density)
 {

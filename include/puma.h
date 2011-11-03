@@ -16,26 +16,33 @@ enum puma_errors {
     N_PUMA_ERRORS
 };
 
+typedef double Real;
+
 char *puma_strerror(int);
 int map[NX][NY]; /* Matrix with land and water bitmask */
+Real hare[NX][NY], puma[NX][NY]; /* Matrices of hare and puma densities */
+
 
 typedef struct EquationVariables
 {
+        float time_interval;
         float prey_pop_inc_rate;
         float pred_rate_coeff;
-        float rep_date_pred;
+        float rep_rate_pred;
         float pred_mort_rate;
         float diff_rate_hares;
-        float diff_rate_pred;
+        float diff_rate_pumas;
 
 }EquationVariables;
 
 int readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp);
+
 int write_ppm_file(int map[NX][NX], double hare[NX][NY], double puma[NX][NY],
 			const int nx, const int ny, const int delta_t,
 			const int hare_density, const int puma_density);
 
-
+void compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, EquationVariables *eq_val);
+ 
 #if __STDC_VERSION__ >= 199901L
     #define PUMA_INLINE inline
 #elif __GNUC__

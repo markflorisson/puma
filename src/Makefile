@@ -9,6 +9,7 @@ EXE=puma
 SRC= \
 	main.c \
 	io.c \
+	pde.c \
 	puma.c
 
 .SUFFIXES:
