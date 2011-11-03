@@ -27,8 +27,8 @@ function [ P,H ] = puma_sim(P_i,H_i,t,delta_t,r,a,k,b,y,l)
 
 % initialize sample matrixes for testing the code
 
-P_i = 2.1*ones(4,4);
-H_i = 2.9*ones(4,4);
+P_i = 1.5*ones(4,4);
+H_i = 3.5*ones(4,4);
 
 % Get auxiliary P_old and H_old matrixes, and initialize the solutions to zero
 
@@ -74,10 +74,13 @@ for z = 0:delta_t:t
 			P(i,j) = P_old(i,j) + delta_t*(b*H_old(i,j)*P_old(i,j)-y*P_old(i,j)+l*((P_old(i-1,j)+P_old(i+1,j)+P_old(i,j-1)+P_old(i,j+1))-N*P_old(i,j)));
 		end	
 	end
-	H_old = H
-	P_old = P
-	pause
+	H_old = H;
+	P_old = P;
+	%pause
 end
+
+P = P(2:m+1,2:n+1);
+H = H(2:m+1,2:n+1);
 
 end
 
