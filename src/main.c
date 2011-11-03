@@ -9,12 +9,13 @@
 #include "puma.h"
 
 static void initLogFile();
-static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj);
+static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_iter);
 
 int 
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
+    int i, max_iter = 0;
 	EquationVariables eqn_obj;
 
 	initLogFile();
@@ -23,12 +24,12 @@ main(int argc, char *argv[])
 			-b <reproduction rate of predators> -m <predator mortality rate> 
 			-k <diffusion rate of hares> -l <diffusion rate of predators> 
 	*/
-	parseCommandLine(argc, argv, &eqn_obj);
+	parseCommandLine(argc, argv, &eqn_obj, &max_iter);
 			 
 
 	/* TODO:
 		1. Get command line input. use getopt to parse it
-		2. fill the map matrix from i=1 and j=1, to add the halo region
+		2. fill the map matrix from i=1 and j=1, to add the edge region
 		3. write the logic to print ppm file
 		4. Integrate the computational kernel
 	*/
@@ -37,7 +38,11 @@ main(int argc, char *argv[])
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
 
-
+    /* Invoke computational kernel */
+    for (int i = 0; i < max_iter; i++)
+    {
+        compute(hare, puma, map, nx, ny, &eqn_obj);
+    }
 	close(log_fd);
 	return 0;
 }

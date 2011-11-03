@@ -1,18 +1,15 @@
 #include <puma.h>
 
-/* Matrices used for testing */
-int land[NX][NY];
-double hare[NX][NY], puma[NX][NY];
-
 /* Matrices used in compute function. */
-double hare_new[NX][NY], puma_new[NX][NY];
+Real hare_new[NX][NY], puma_new[NX][NY];
 
 void
-compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int ny, double delta_t, EquationVariables *eq_val) 
+compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, EquationVariables *eq_val) 
 {
     int n, i, j;
-    float r, a, b, m, k, l;
+    Real delta_t, r, a, b, m, k, l;
     
+    delta_t = eq_val -> time_interval;
     r = eq_val -> prey_pop_inc_rate;
     a = eq_val -> pred_rate_coeff;
     b = eq_val -> rep_rate_pred;
@@ -57,11 +54,12 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     }
 }
 
-/*int main(void)
+/*
+int main(void)
 {
 
-    double r, a, k, b, m, l, delta_t;
-    int i, j, nx, ny;
+    Real r, a, k, b, m, l, delta_t;
+    int i, j, iter, nx, ny;
     EquationVariables eqn_obj;
     delta_t = 0.4;
     nx = ny = 10;
@@ -70,6 +68,7 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     b = 0.02;
     m = 0.06;
     k = l = 0.2;
+    eqn_obj.time_interval = delta_t;
     eqn_obj.prey_pop_inc_rate = .08;
     eqn_obj.pred_rate_coeff = .04;
     eqn_obj.rep_rate_pred = .02;
@@ -81,15 +80,15 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     {
         for (j = 0; j < ny; j++)
         {
-            if (i == 0 || i == nx - 1 || j == 0 || j == ny -1)
+            if (i == 0 || i == nx - 1 || j == 0 || j == ny - 1)
             {
-                land[i][j] = 0;
+                map[i][j] = 0;
                 hare[i][j] = .0;
                 puma[i][j] = .0;
             }
             else
             {
-                land[i][j] = 1;
+                map[i][j] = 1;
                 hare[i][j] = 0;
                 puma[i][j] = 0;
             }
@@ -107,16 +106,18 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
         }
         printf("\n");
     }
-
-        compute(hare, puma, land, nx, 
-        ny, delta_t, &eqn_obj); 
-    printf("Hare matrix after: \n");
-    for (i = 0; i < nx; i++)
-    {
-        for (j = 0; j < ny; j++)
+    for (iter = 0; iter < 10; iter++)
+    {    
+        compute(hare, puma, map, nx, 
+            ny, &eqn_obj); 
+        printf("Hare matrix after: \n");
+        for (i = 0; i < nx; i++)
         {
-            printf("%f " , hare[i][j]);
+            for (j = 0; j < ny; j++)
+            {
+                printf("%f " , hare[i][j]);
+            }
+            printf("\n");
         }
-        printf("\n");
     }
 }*/
