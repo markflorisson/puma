@@ -1,15 +1,26 @@
 #include <puma.h>
 
+/* Matrices used for testing */
 int land[NX][NY];
 double hare[NX][NY], puma[NX][NY];
+
+/* Matrices used in compute function. */
 double hare_new[NX][NY], puma_new[NX][NY];
 
-/* To reduce access to memory, the compute function assumes the population densities on water cells are initialised to -1 */
 void
-compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int ny, double delta_t, double r, 
-    double a, double k, double b, double m, double l) 
+compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int ny, double delta_t, EquationVariables *eq_val) 
 {
     int n, i, j;
+    float r, a, b, m, k, l;
+    
+    r = eq_val -> prey_pop_inc_rate;
+    a = eq_val -> pred_rate_coeff;
+    b = eq_val -> rep_rate_pred;
+    m = eq_val -> pred_mort_rate;
+    l = eq_val -> diff_rate_pumas;
+    k = eq_val -> diff_rate_hares; 
+    
+    /* Initialising new matrices for hares and pumas. */
     for (i = 0; i < nx; i++)
     {
         for (j = 0; j < ny; j++)
@@ -17,26 +28,25 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
             hare_new[i][j] = puma_new[i][j] = 0;
         }
     }
+
+    /* Compute the densities for one iteration. */
     for (i = 1; i < nx - 1; i++)
     {
         for (j = 1; j < ny - 1; j++)
         {
-            /* If cell[i][j] is land, compute the new value of hare and puma.*/
-            if (land[i][j] == 1)
-            {
-                int n = land[i - 1][j] + land[i + 1][j] + land[i][j - 1] + land[i][j + 1];
-                hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] + 
-                    k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));
-                puma_new[i][j] = puma[i][j] + delta_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] + 
-                    l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
-                
+            /* If cell[i][j] is water, skip this cell. */
+            if (land[i][j] == 0) continue;
 
-            }
-            /* If cell[i][j] is water, do nothing. */
+            int n = land[i - 1][j] + land[i + 1][j] + land[i][j - 1] + land[i][j + 1];
 
+            hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] + 
+                k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));
+
+            puma_new[i][j] = puma[i][j] + delta_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] + 
+                l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
         }
     }
-    /*` Replace the old hare and puma matrices by the new two. */
+    /* Replace the old hare and puma matrices by the new two. */
     for (i = 1; i < nx - 1; i++)
     {
         for (j = 1; j < ny - 1; j++)
@@ -52,6 +62,7 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
 
     double r, a, k, b, m, l, delta_t;
     int i, j, nx, ny;
+    EquationVariables eqn_obj;
     delta_t = 0.4;
     nx = ny = 10;
     r = 0.08;
@@ -59,6 +70,11 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     b = 0.02;
     m = 0.06;
     k = l = 0.2;
+    eqn_obj.prey_pop_inc_rate = .08;
+    eqn_obj.pred_rate_coeff = .04;
+    eqn_obj.rep_rate_pred = .02;
+    eqn_obj.pred_mort_rate = .06;
+    eqn_obj.diff_rate_hares = eqn_obj.diff_rate_pumas = .2;
     printf("NX: %d, NY: %d\n", NX, NY);
     
     for (i = 0; i < nx; i++)
@@ -93,7 +109,7 @@ compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int 
     }
 
         compute(hare, puma, land, nx, 
-        ny, delta_t, r, a, k, b, m, l); 
+        ny, delta_t, &eqn_obj); 
     printf("Hare matrix after: \n");
     for (i = 0; i < nx; i++)
     {
