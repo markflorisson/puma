@@ -3,7 +3,5 @@ Predators and preys
 
 Program to simulate predator(Puma) & prey(Hare)
 
-
-
 * Please source puma-setup to setup the environment for compilation
-	e.g. . ./puma-setup
+	e.g.: source ./puma-setup

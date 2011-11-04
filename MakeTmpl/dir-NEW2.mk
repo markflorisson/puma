@@ -48,30 +48,8 @@ clean:		$(SUBDIRS:%=%.clean)
 		$(MAKE) -C $* $(subst $*.,,$@)
 
 #======================================================================
-# Rules for performing realclean
-#======================================================================
-realclean:      $(SUBDIRS:%=%.realclean)
-
-%.realclean: 
-	$(MAKE) -C $* $(subst $*.,,$@)
-
-unlink:         $(SUBDIRS:%=%.unlink)
-
-%.unlink:
-	$(MAKE) -C $* $(subst $*.,,$@)
-
-
-ec_clean:       $(SUBDIRS:%=%.ec_clean)
-
-%.ec_clean:
-	 $(MAKE) -C $* $(subst $*.,,$@)
-
-
-#======================================================================
 # Phony targets
 #======================================================================
-.PHONY:         all hdrz install installonly realclean clean selfclean tags $(SUBDIRS) unlink
-.PHONY: ec_clean
-
+.PHONY:         all hdrz install installonly clean selfclean tags $(SUBDIRS) 
 
 install:	all
