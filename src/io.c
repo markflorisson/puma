@@ -150,7 +150,6 @@ write_ppm_file(int map[NX][NX], Real hare[NX][NY], Real puma[NX][NY], const int 
 		write_pixel_row(file,pixel_buffer,PIXBUFSIZE);
 		memset(pixel_buffer,0,sizeof(int)*PIXBUFSIZE);
 	}
-
 	fclose(file);
 
 	return PUMA_NOERR;

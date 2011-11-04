@@ -8,7 +8,6 @@
 #include "log.h"
 #include "puma.h"
 
-static void initLogFile();
 static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj);
 
 int 
@@ -21,7 +20,6 @@ main(int argc, char *argv[])
 	memset(&eqn_obj,0,sizeof(eqn_obj));
 
 	parseCommandLine(argc, argv, &eqn_obj);
-	initLogFile();
 
 	if (puma_errno = readmap(map, "small.dat", &nx, &ny)) 
 	{
@@ -51,9 +49,6 @@ main(int argc, char *argv[])
 		}
 	}
 
-	
-	
-	close(log_fd);
 	return 0;
 }
 
@@ -126,36 +121,5 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 				break;
 		}
 	}
-
-}
-
-void 
-initLogFile()  /* TODO: Put this in log.c */
-{
-
-	const char *log_path = getenv("PROJ_LOG");
-	const char *log_file = "puma_debug.log";
-
-	char buf[128] = {'\0'};
-
-	if(log_path == NULL) 
-	{
-		fprintf(stderr,"[%s:%d]: Environment not setup\n",__FILE__,__LINE__);
-		exit(1);
-	}
-	
-	strcpy(buf,log_path);
-	strcat(buf,"/");	
-	strcat(buf,log_file);	
-	
-	log_fd = open(buf,O_CREAT|O_RDWR|O_APPEND,S_IRUSR|S_IWUSR);
-	if(-1 == log_fd) 
-	{
-		fprintf(stderr,"%s\n",puma_strerror(PUMA_OSERROR));	
-	}
-	
-	/* Redirect stdout and stderr to the log file */	
-	//dup2(log_fd,STDOUT_FILENO);
-	//dup2(log_fd,STDERR_FILENO);
 
 }

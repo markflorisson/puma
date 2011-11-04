@@ -4,8 +4,6 @@
 #include <stdarg.h>
 #include <time.h>
 
-int log_fd; /* File descriptor for log file */
-
 static char*
 getTimeStamp(char *time_stamp)
 {
