@@ -8,20 +8,23 @@
 #include "log.h"
 #include "puma.h"
 
-static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj);
+static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, char *filename);
 
 int 
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
 	int i, j, max_iter = 100;
+	char filename[64] = {'\0'};
 	EquationVariables eqn_obj;
+
+	/* TODO: check for ulimit values here ?? */
 
 	memset(&eqn_obj,0,sizeof(eqn_obj));
 
-	parseCommandLine(argc, argv, &eqn_obj);
+	parseCommandLine(argc, argv, &eqn_obj, filename);
 
-	if (puma_errno = readmap(map, "small.dat", &nx, &ny)) 
+	if (puma_errno = readmap(map, filename, &nx, &ny)) 
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
@@ -65,7 +68,7 @@ printUsage(char *argv[])
 }
 
 void
-parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
+parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, char *filename)
 {
 	char ch = '\0';
 	
@@ -79,7 +82,7 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
         eqn_obj->diff_rate_pumas = 0.2;
 
 
-	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:t:")) != -1 )
+	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:t:f:")) != -1 )
 	{
 		switch(ch)
 		{
@@ -116,10 +119,20 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 				eqn_obj->time_interval = atof(optarg);	
 				break;
 
+			case 'f':
+				strcpy(filename, optarg);	
+				break;
+
 			default:
 				printf("Setting defaults for equations params\n");
 				break;
 		}
+	}
+
+	if(strlen(filename) <= 0)
+	{
+		error_msg("[%s:%d]: ERROR!! Missing input file file\n",__FILE__,__LINE__);
+		exit(1);
 	}
 
 }
