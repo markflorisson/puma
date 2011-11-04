@@ -16,16 +16,7 @@ compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, 
 	m = eq_val -> pred_mort_rate;
 	l = eq_val -> diff_rate_pumas;
 	k = eq_val -> diff_rate_hares; 
-
-	/* Initialising new matrices for hares and pumas. */
-	for (i = 0; i < nx; i++)
-	{
-		for (j = 0; j < ny; j++)
-		{
-			hare_new[i][j] = puma_new[i][j] = 0;
-		}
-	}
-
+    
 	/* Compute the densities for one iteration. */
 	for (i = 1; i < nx - 1; i++)
 	{
@@ -43,7 +34,8 @@ compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, 
 					l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
 		}
 	}
-	/* Replace the old hare and puma matrices by the new two. */
+	
+    /* Replace the old hare and puma matrices by the new two. */
 	for (i = 1; i < nx - 1; i++)
 	{
 		for (j = 1; j < ny - 1; j++)
