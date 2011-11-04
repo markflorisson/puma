@@ -32,7 +32,6 @@ debug_msg(const char* msg, ...)
 #ifdef DEBUG
 	sprintf(line,"%s:%s",time_stamp,msg);	
 	vfprintf(stdout,line,list);
-	fflush(stdout);
 #endif
 	va_end(list);
 }

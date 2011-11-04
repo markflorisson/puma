@@ -9,18 +9,18 @@
 #include "puma.h"
 
 static void initLogFile();
-static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_iter);
+static void parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj);
 
 int 
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
-	int i, max_iter = 0;
+	int i, j, max_iter = 100;
 	EquationVariables eqn_obj;
 
 	memset(&eqn_obj,0,sizeof(eqn_obj));
 
-	parseCommandLine(argc, argv, &eqn_obj, &max_iter);
+	parseCommandLine(argc, argv, &eqn_obj);
 	initLogFile();
 
 	if (puma_errno = readmap(map, "small.dat", &nx, &ny)) 
@@ -28,13 +28,31 @@ main(int argc, char *argv[])
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
 
+	printf("nx: %d, ny: %d\n",nx,ny);
+
+	for(i=0;i<NX;i++)
+	{
+		for(j=0;j<NY;j++)
+		{
+			hare[i][j] = 2.0;
+			puma[i][j] = 4.0;
+		}
+	}
 
 	/* Invoke computational kernel */
 	for (i = 0; i < max_iter; i++)
 	{
 		compute(hare, puma, map, nx, ny, &eqn_obj);
+
+		printf("Writing ppm for iter %d\n",i);
+		if (puma_errno = write_ppm_file(map, hare, puma, nx, ny, i) )
+		{
+			error_msg("[%s:%d]: Error writing ppm file for iter %d: %s\n",__FILE__,__LINE__,1,puma_strerror(puma_errno));
+		}
 	}
 
+	
+	
 	close(log_fd);
 	return 0;
 }
@@ -52,12 +70,12 @@ printUsage(char *argv[])
 }
 
 void
-parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_iter)
+parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj)
 {
 	char ch = '\0';
 	
 	/* Set the defaults */
-	*max_iter = 500;
+	eqn_obj->time_interval= 0.4;
         eqn_obj->prey_pop_inc_rate = 0.08;
         eqn_obj->pred_rate_coeff = 0.04;
         eqn_obj->rep_rate_pred = 0.02;
@@ -66,7 +84,7 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_it
         eqn_obj->diff_rate_pumas = 0.2;
 
 
-	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:i:")) != -1 )
+	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:t:")) != -1 )
 	{
 		switch(ch)
 		{
@@ -99,8 +117,8 @@ parseCommandLine(int argc, char *argv[], EquationVariables *eqn_obj, int *max_it
 				eqn_obj->diff_rate_pumas = atof(optarg);
 				break;
 
-			case 'i':
-				*max_iter = atoi(optarg);	
+			case 't':
+				eqn_obj->time_interval = atof(optarg);	
 				break;
 
 			default:
@@ -116,7 +134,7 @@ initLogFile()  /* TODO: Put this in log.c */
 {
 
 	const char *log_path = getenv("PROJ_LOG");
-	const char *log_file = "puma.log";
+	const char *log_file = "puma_debug.log";
 
 	char buf[128] = {'\0'};
 
@@ -131,7 +149,8 @@ initLogFile()  /* TODO: Put this in log.c */
 	strcat(buf,log_file);	
 	
 	log_fd = open(buf,O_CREAT|O_RDWR|O_APPEND,S_IRUSR|S_IWUSR);
-	if(-1 == log_fd) {
+	if(-1 == log_fd) 
+	{
 		fprintf(stderr,"%s\n",puma_strerror(PUMA_OSERROR));	
 	}
 	
