@@ -19,8 +19,8 @@ enum puma_errors {
 typedef double Real;
 
 char *puma_strerror(int);
-int map[NX][NY]; /* Matrix with land and water bitmask */
-Real hare[NX][NY], puma[NX][NY]; /* Matrices of hare and puma densities */
+int map[NX+2][NY+2]; /* Matrix with land and water bitmask */
+Real hare[NX+2][NY+2], puma[NX+2][NY+2]; /* Matrices of hare and puma densities */
 
 
 typedef struct EquationVariables
@@ -35,11 +35,12 @@ typedef struct EquationVariables
 
 }EquationVariables;
 
-int readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp);
-
-int write_ppm_file(int map[NX][NX], double hare[NX][NY], double puma[NX][NY], const int nx, const int ny, const int delta_t);
-
-void compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, EquationVariables *eq_val);
+//int readmap(int map[NX+2][NY+2], const char *filename, int *nxp, int *nyp);
+//int write_ppm_file(int map[NX+2][NX+2], double hare[NX+2][NY+2], double puma[NX+2][NY+2], const int nx, const int ny, const int delta_t);
+//void compute(Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], int land[NX+2][NY+2], int nx, int ny, EquationVariables *eq_val);
+int readmap(const char *filename, int *nxp, int *nyp);
+int write_ppm_file(const int nx, const int ny, const int delta_t);
+void compute(int nx, int ny, EquationVariables *eq_val);
  
 #if __STDC_VERSION__ >= 199901L
     #define PUMA_INLINE inline

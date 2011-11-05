@@ -24,7 +24,8 @@ fscanf_error(FILE *file, int retval)
 }
 
 int
-readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp)
+//readmap(int map[NX+2][NY+2], const char *filename, int *nxp, int *nyp)
+readmap(const char *filename, int *nxp, int *nyp)
 {
 	int i, j;
 	int nx, ny; /* bounds of the map */
@@ -43,8 +44,8 @@ readmap(int map[NX][NY], const char *filename, int *nxp, int *nyp)
 		return PUMA_ERROR_OOB;
 
 	/* Scan in all element of the array */
-	for (i = 0; i < nx; i++) {
-		for (j = 0; j < ny; j++) {
+	for (i = 1; i <= nx; i++) {
+		for (j = 1; j <= ny; j++) {
 			int value;
 
 			if ((result = fscanf(file, "%d", &value)) != 1)
@@ -65,8 +66,9 @@ write_pixel_row(FILE *file, int *pixel_row, const int PIXBUFSIZE)
 {
 	int i = 0;
 	int j = 0;
-	
-	for(j = 0; j < XPIXELS; j++) /* copy the pixel rows XPIXELS number of times */
+
+	/* copy the pixel rows XPIXELS number of times */
+	for(j = 0; j < XPIXELS; j++) 
 	{
 		for(i = 0; i < PIXBUFSIZE; i++) 
 		{
@@ -83,10 +85,6 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter)
 	int i = 0;
 	int j = *pixel_counter;
 
-	/* 
-	  The pixel value is copied YPIXELS number 
-	  of times since 1 pixel is too small.
-	*/
 	for(i = 0; i < YPIXELS; i++)
 	{
 		pixel_buffer[j++] = pixel[RED];
@@ -98,7 +96,8 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter)
 }
 
 int 
-write_ppm_file(int map[NX][NX], Real hare[NX][NY], Real puma[NX][NY], const int nx, const int ny, const int iter_num)
+write_ppm_file(const int nx, const int ny, const int iter_num)
+//write_ppm_file(int map[NX+2][NX+2], Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], const int nx, const int ny, const int iter_num)
 {
 	int i = 0, j = 0;
 	char filename[64] = {'\0'};
@@ -107,22 +106,22 @@ write_ppm_file(int map[NX][NX], Real hare[NX][NY], Real puma[NX][NY], const int 
 	int pixel_counter = 0;
 	int *pixel_buffer = NULL;
 	const int PIXBUFSIZE = YPIXELS * ny * 3; /* 3 since each pixel has RGB */
-	
+
 	sprintf(filename,"pumaHare_%d.ppm",iter_num);
-    
+
 	FILE *file = fopen(filename, "w");
 
-    if (!file) return PUMA_OSERROR;
+	if (!file) return PUMA_OSERROR;
 
 	fprintf(file, "P3\n");
 	fprintf(file, "%d %d\n",YPIXELS * ny,XPIXELS * nx);
 	fprintf(file, "%d\n",MAX_COLOR_VAL);
 
 	pixel_buffer = (int*)(malloc(sizeof(int) * PIXBUFSIZE)); 
-	
-	for (i = 0; i < nx; i++)
+
+	for (i = 1; i <= nx; i++)
 	{
-		for (j = 0; j < ny; j++)
+		for (j = 1; j <= ny; j++)
 		{
 			if(map[i][j] == 0) 
 			{
@@ -147,10 +146,12 @@ write_ppm_file(int map[NX][NX], Real hare[NX][NY], Real puma[NX][NY], const int 
 			memset(pixel,0,sizeof(int)*3);
 		}
 		pixel_counter = 0;
+
 		write_pixel_row(file,pixel_buffer,PIXBUFSIZE);
 		memset(pixel_buffer,0,sizeof(int)*PIXBUFSIZE);
 	}
 	fclose(file);
+	free(pixel_buffer);
 
 	return PUMA_NOERR;
 

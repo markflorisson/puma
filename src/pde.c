@@ -1,10 +1,11 @@
 #include <puma.h>
 
 /* Matrices used in compute function. */
-Real hare_new[NX][NY], puma_new[NX][NY];
+Real hare_new[NX+2][NY+2] = {0}, puma_new[NX+2][NY+2] = {0};
 
 void
-compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, EquationVariables *eq_val) 
+//compute(Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], int map[NX+2][NY+2], int nx, int ny, EquationVariables *eq_val) 
+compute(int nx, int ny, EquationVariables *eq_val) 
 {
 	int n, i, j;
 	Real delta_t, r, a, b, m, k, l;
@@ -18,14 +19,14 @@ compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, 
 	k = eq_val -> diff_rate_hares; 
     
 	/* Compute the densities for one iteration. */
-	for (i = 1; i < nx - 1; i++)
+	for (i = 1; i <= nx ; i++)
 	{
-		for (j = 1; j < ny - 1; j++)
+		for (j = 1; j <= ny; j++)
 		{
 			/* If cell[i][j] is water, skip this cell. */
-			if (land[i][j] == 0) continue;
+			if (map[i][j] == 0) continue;
 
-			int n = land[i - 1][j] + land[i + 1][j] + land[i][j - 1] + land[i][j + 1];
+			int n = map[i - 1][j] + map[i + 1][j] + map[i][j - 1] + map[i][j + 1];
 
 			hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] + 
 					k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));
@@ -36,14 +37,20 @@ compute(Real hare[NX][NY], Real puma[NX][NY], int land[NX][NY], int nx, int ny, 
 	}
 	
     /* Replace the old hare and puma matrices by the new two. */
-	for (i = 1; i < nx - 1; i++)
+	/*for (i = 1; i < nx - 1; i++)
 	{
 		for (j = 1; j < ny - 1; j++)
 		{
 			hare[i][j] = hare_new[i][j];
 			puma[i][j] = puma_new[i][j];
 		}
-	}
+	}*/
+	memcpy(hare,hare_new,sizeof(hare_new));
+	memcpy(puma,puma_new,sizeof(puma_new));
+
+	memset(hare_new,0,sizeof(hare_new));
+	memset(puma_new,0,sizeof(puma_new));
+
 }
 
 /*
