@@ -10,7 +10,7 @@
 
 #include "log.h"
 
-
+int map[NX][NY] = {{0}};
 
 /* Pointer to the file used by the tests. */
 static FILE* temp_file = NULL;
@@ -60,8 +60,6 @@ void test_readmap(void)
   int value;
   fscanf(file, "%d %d", &nx, &ny);
   int buf[nx][ny];
-  int puma_errno;
-
 
   /* Scan in all element of the array */
   for (i = 0; i < nx; i++){
@@ -71,12 +69,14 @@ void test_readmap(void)
     }
   }
 
-  PUMA_FAIL_ON_ERR(readmap(map, filename, &nx, &ny));
+  PUMA_FAIL_ON_ERR(readmap(filename, map, &nx, &ny));
 
   for(i = 0; i < nx; i++){
     for(j =0; j < ny; j++)
-      CU_ASSERT(buf[i][j]==map[i][j]);
+      CU_ASSERT_EQUAL(buf[i][j], map[i][j]);
   }
+
+  memset(map, 0, sizeof(map));
 
 }
 
@@ -109,16 +109,16 @@ void test_kernel(void)
   //fscanf(file_Map, "%d %d", &nx, &ny);
   nx=4;
   ny=4;
-  Real solution[NX][NY];
-  Real hare[NX][NY];
-  Real puma[NX][NY];
+  REAL solution[NX][NY];
+  REAL hare[NX][NY];
+  REAL puma[NX][NY];
   int Map[NX][NY];
 
 
   /* Scan in all element of the array */
   for (i = 0; i < NX; i++){
     for (j = 0; j < NY; j++){
-      fscanf(file_Solution, "%f", &value_s);
+      fscanf(file_Solution, "%d", &value_s);
       fscanf(file_Hares, "%d", &value_h);
       fscanf(file_Puma, "%d", &value_p);
       fscanf(file_Map, "%d", &value_m);
@@ -139,7 +139,7 @@ void test_kernel(void)
 
    for(i = 0; i < nx; i++){
      for(j =0; j < ny; j++)
-       CU_ASSERT(solution[i][j]==hare[i][j]);
+       CU_ASSERT_EQUAL(solution[i][j], hare[i][j]);
    }
 
 }
