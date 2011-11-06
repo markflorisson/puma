@@ -10,6 +10,7 @@ SRC= \
 	main.c \
 	io.c \
 	pde.c \
+	randgen.c \
 	puma.c
 
 TEST_SRC=\

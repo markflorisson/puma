@@ -8,6 +8,7 @@
 #include "log.h"
 #include "puma.h"
 
+extern float random_uniform(float max_val);
 static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename);
 
 int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
@@ -27,11 +28,6 @@ main(int argc, char *argv[])
 	 */
 	parse_command_line(argc, argv, &eqn_obj, filename);
 
-	/*
-		TODO: might need to add explicit halo region.
-		If the bitmask given in the file does not contain a halo
-		the code will break.
-	*/
 	if ((puma_errno = readmap(filename, map, &nx, &ny)))
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
@@ -40,20 +36,17 @@ main(int argc, char *argv[])
 
 	debug_msg("[%s:%d]: nx: %d, ny: %d\n",__FILE__,__LINE__,nx,ny);
 
-	/* Init with some dummy values. Remove before submitting code */
+	/* Init with random values for the densities of hare and puma within 0 and 5 */
 	for(i=1;i<=nx;i++)
 	{
 		for(j=1;j<=ny;j++)
 		{
-			hare[i][j] = 2.0;
-			puma[i][j] = 4.0;
+			//hare[i][j] = 2.0;
+			//puma[i][j] = 4.0;
+			hare[i][j] = random_uniform(5.0);
+			puma[i][j] = random_uniform(5.0);
 		}
 	}
-
-	/*
-		TODO: call a function to populate the hare and puma matrices
-		with random value between 0 and 5
-	*/
 
 	/* Invoke computational kernel */
 	for (i = 0; i < max_iter; i++)
