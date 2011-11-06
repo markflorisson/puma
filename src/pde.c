@@ -1,14 +1,14 @@
 #include <puma.h>
 
 /* Matrices used in compute function. */
-Real hare_new[NX+2][NY+2] = {0}, puma_new[NX+2][NY+2] = {0};
+REAL hare_new[NX+2][NY+2] = {{0}}, puma_new[NX+2][NY+2] = {{0}};
 
 void
-//compute(Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], int map[NX+2][NY+2], int nx, int ny, EquationVariables *eq_val)
-compute(int nx, int ny, EquationVariables *eq_val)
+compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
+        EquationVariables *eq_val)
 {
 	int n, i, j;
-	Real delta_t, r, a, b, m, k, l;
+	REAL delta_t, r, a, b, m, k, l;
 
 	delta_t = eq_val -> time_interval;
 	r = eq_val -> prey_pop_inc_rate;

@@ -24,8 +24,7 @@ fscanf_error(FILE *file, int retval)
 }
 
 int
-//readmap(int map[NX+2][NY+2], const char *filename, int *nxp, int *nyp)
-readmap(const char *filename, int *nxp, int *nyp)
+readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 {
 	int i, j;
 	int nx, ny; /* bounds of the map */
@@ -96,8 +95,7 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter)
 }
 
 int
-write_ppm_file(const int nx, const int ny, const int iter_num)
-//write_ppm_file(int map[NX+2][NX+2], Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], const int nx, const int ny, const int iter_num)
+write_ppm_file(int map[NX][NX], REAL hare[NX][NY], REAL puma[NX][NY], const int nx, const int ny, const int iter_num)
 {
 	int i = 0, j = 0;
 	char filename[64] = {'\0'};
@@ -123,7 +121,7 @@ write_ppm_file(const int nx, const int ny, const int iter_num)
 	{
 		for (j = 1; j <= ny; j++)
 		{
-			if(map[i][j] == 0)
+			if (map[i][j] == 0)
 			{
 				/* color water grids with blue */
 				pixel[BLUE] = MAX_COLOR_VAL / 2;

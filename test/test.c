@@ -50,16 +50,17 @@ int clean_suite1(void)
  * and checks whether the expected characters are present.
  * Must be run after testFPRINTF().
  */
-void testReadmap(void)
+void test_readmap(void)
 {
 
   int nx,ny;
-  char filename[64] = {"small.dat"};
+  char *filename = "small.dat";
   int i,j;
   FILE *file = fopen(filename, "r");
   int value;
   fscanf(file, "%d %d", &nx, &ny);
   int buf[nx][ny];
+  int puma_errno;
 
 
   /* Scan in all element of the array */
@@ -70,7 +71,7 @@ void testReadmap(void)
     }
   }
 
-  readmap(map, filename, &nx, &ny);
+  PUMA_FAIL_ON_ERR(readmap(map, filename, &nx, &ny));
 
   for(i = 0; i < nx; i++){
     for(j =0; j < ny; j++)
@@ -80,7 +81,7 @@ void testReadmap(void)
 }
 
 
-void testKernal(void)
+void test_kernel(void)
 {
   int nx,ny;
   int i,j;
@@ -170,8 +171,8 @@ int main()
 
    /* add the tests to the suite */
    /* NOTE - ORDER IS IMPORTANT - MUST TEST fread() AFTER fprintf() */
-   if ((NULL == CU_add_test(pSuite, "test of function readmap in I/O", testReadmap)) ||
-       (NULL == CU_add_test(pSuite, "test of kernal code",testKernal )))
+   if ((NULL == CU_add_test(pSuite, "test of function readmap in I/O", test_readmap)) ||
+       (NULL == CU_add_test(pSuite, "test of kernal code", test_kernel )))
    {
       CU_cleanup_registry();
       return CU_get_error();

@@ -5,24 +5,21 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <log.h>
-#include <puma.h>
+#include "log.h"
+#include "puma.h"
 
 static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename);
+
+int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
+REAL hare[NX][NY] = {{0}}, puma[NX][NY] = {{0}}; /* Matrices of hare and puma densities */
 
 int
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
 	int i = 0, j = 0, max_iter = 100;
-	char filename[64] = {'\0'};
-	EquationVariables eqn_obj;
-
-	/* Initialize all datastructures */
-	memset(&eqn_obj,0,sizeof(eqn_obj));
-	memset(&map,0,sizeof(map));
-	memset(&hare,0,sizeof(hare));
-	memset(&puma,0,sizeof(puma));
+	char filename[PUMA_FILENAME_SIZE] = {'\0'};
+	EquationVariables eqn_obj = { 0 };
 
 	/*
 		TODO: check if values are within certain boundaries,
@@ -35,9 +32,10 @@ main(int argc, char *argv[])
 		If the bitmask given in the file does not contain a halo
 		the code will break.
 	*/
-	if (puma_errno = readmap(filename, &nx, &ny))
+	if ((puma_errno = readmap(filename, map, &nx, &ny)))
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
+        exit(EXIT_FAILURE);
 	}
 
 	debug_msg("[%s:%d]: nx: %d, ny: %d\n",__FILE__,__LINE__,nx,ny);
@@ -60,12 +58,13 @@ main(int argc, char *argv[])
 	/* Invoke computational kernel */
 	for (i = 0; i < max_iter; i++)
 	{
-		compute(nx, ny, &eqn_obj);
+		compute(map, puma, hare, nx, ny, &eqn_obj);
 
 		debug_msg("[%s:%d]: Writing ppm for iter %d\n",__FILE__,__LINE__,i);
-		if (puma_errno = write_ppm_file(nx, ny, i))
+		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, i)))
 		{
 			error_msg("[%s:%d]: Error writing ppm file for iter %d: %s\n",__FILE__,__LINE__,1,puma_strerror(puma_errno));
+            exit(EXIT_FAILURE);
 		}
 	}
 
@@ -139,7 +138,7 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
 				break;
 
 			case 'f':
-				strcpy(filename, optarg);
+				strncpy(filename, optarg, PUMA_FILENAME_SIZE);
 				break;
 
 			default:
@@ -148,7 +147,7 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
 		}
 	}
 
-	if(strlen(filename) <= 0)
+	if (strlen(filename) <= 0)
 	{
 		error_msg("[%s:%d]: ERROR!! Missing mandatory input file field\n",__FILE__,__LINE__);
 		error_msg("[%s:%d]: Usage: puma -f file.dat\n",__FILE__,__LINE__);
