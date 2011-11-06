@@ -126,9 +126,8 @@ void test_kernel(void)
     eqn_obj.diff_rate_hares = 0.2;
     eqn_obj.diff_rate_pumas = 0.2;
 
-    //fscanf(file_Map, "%d %d", &nx, &ny);
-    nx=4;
-    ny=4;
+    fscanf(file_Map, "%d %d", &nx, &ny);
+   
 
     /* Scan in all element of the array */
     for (i = 0; i < NX; i++){
@@ -144,8 +143,8 @@ void test_kernel(void)
         }
     }
 
-    //for (i = 0; i < max_iter; i++)
-    // compute(hare, puma, map, nx, ny, &eqn_obj);
+    for (i = 0; i < max_iter; i++)
+     compute(hare, puma, map, nx, ny, &eqn_obj);
 
      for(i = 0; i < nx; i++){
         for(j =0; j < ny; j++) {
