@@ -18,6 +18,7 @@ enum puma_errors {
 
 #define REAL double
 #define PUMA_FILENAME_SIZE 128
+#define MAX_DENSITY 5.0
 
 char *puma_strerror(int);
 

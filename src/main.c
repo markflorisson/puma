@@ -43,8 +43,8 @@ main(int argc, char *argv[])
 		{
 			//hare[i][j] = 2.0;
 			//puma[i][j] = 4.0;
-			hare[i][j] = random_uniform(5.0);
-			puma[i][j] = random_uniform(5.0);
+			hare[i][j] = random_uniform(MAX_DENSITY);
+			puma[i][j] = random_uniform(MAX_DENSITY);
 		}
 	}
 

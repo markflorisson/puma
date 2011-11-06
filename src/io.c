@@ -7,7 +7,6 @@
 #define YPIXELS 12
 
 #define MAX_COLOR_VAL 50
-#define MAX_DENSITY 5.0
 
 enum { RED, GREEN, BLUE };
 
