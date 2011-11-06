@@ -4,8 +4,8 @@
 Real hare_new[NX+2][NY+2] = {0}, puma_new[NX+2][NY+2] = {0};
 
 void
-//compute(Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], int map[NX+2][NY+2], int nx, int ny, EquationVariables *eq_val) 
-compute(int nx, int ny, EquationVariables *eq_val) 
+//compute(Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], int map[NX+2][NY+2], int nx, int ny, EquationVariables *eq_val)
+compute(int nx, int ny, EquationVariables *eq_val)
 {
 	int n, i, j;
 	Real delta_t, r, a, b, m, k, l;
@@ -16,8 +16,8 @@ compute(int nx, int ny, EquationVariables *eq_val)
 	b = eq_val -> rep_rate_pred;
 	m = eq_val -> pred_mort_rate;
 	l = eq_val -> diff_rate_pumas;
-	k = eq_val -> diff_rate_hares; 
-    
+	k = eq_val -> diff_rate_hares;
+
 	/* Compute the densities for one iteration. */
 	for (i = 1; i <= nx ; i++)
 	{
@@ -28,14 +28,14 @@ compute(int nx, int ny, EquationVariables *eq_val)
 
 			int n = map[i - 1][j] + map[i + 1][j] + map[i][j - 1] + map[i][j + 1];
 
-			hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] + 
+			hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] +
 					k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));
 
-			puma_new[i][j] = puma[i][j] + delta_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] + 
+			puma_new[i][j] = puma[i][j] + delta_t * (b * hare[i][j] * puma[i][j] - m * puma[i][j] +
 					l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
 		}
 	}
-	
+
     /* Replace the old hare and puma matrices by the new two. */
 	/*for (i = 1; i < nx - 1; i++)
 	{
@@ -74,7 +74,7 @@ int main(void)
     eqn_obj.pred_mort_rate = .06;
     eqn_obj.diff_rate_hares = eqn_obj.diff_rate_pumas = .2;
     printf("NX: %d, NY: %d\n", NX, NY);
-    
+
     for (i = 0; i < nx; i++)
     {
         for (j = 0; j < ny; j++)
@@ -106,9 +106,9 @@ int main(void)
         printf("\n");
     }
     for (iter = 0; iter < 10; iter++)
-    {    
-        compute(hare, puma, map, nx, 
-            ny, &eqn_obj); 
+    {
+        compute(hare, puma, map, nx,
+            ny, &eqn_obj);
         printf("Hare matrix after: \n");
         for (i = 0; i < nx; i++)
         {

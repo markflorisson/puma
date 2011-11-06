@@ -23,12 +23,12 @@ debug_msg(const char* msg, ...)
 	va_list list;
 	char time_stamp[16] = {'\0'};
 	char line[4096] = {'\0'};
-	
+
 	getTimeStamp(time_stamp);
 
 	va_start(list,msg);
 #ifdef DEBUG
-	sprintf(line,"%s:%s",time_stamp,msg);	
+	sprintf(line,"%s:%s",time_stamp,msg);
 	vfprintf(stdout,line,list);
 #endif
 	va_end(list);
@@ -40,12 +40,12 @@ error_msg(const char* msg, ...)
 	va_list list;
 	char time_stamp[16] = {'\0'};
 	char line[4096] = {'\0'};
-	
+
 	getTimeStamp(time_stamp);
 
 	va_start(list,msg);
 
-	sprintf(line,"%s:%s",time_stamp,msg);	
+	sprintf(line,"%s:%s",time_stamp,msg);
 	vfprintf(stderr,line,list);
 
 	va_end(list);
