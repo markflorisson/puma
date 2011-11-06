@@ -68,9 +68,9 @@ write_pixel_row(FILE *file, int *pixel_row, const int PIXBUFSIZE)
 	int j = 0;
 
 	/* copy the pixel rows XPIXELS number of times */
-	for(j = 0; j < XPIXELS; j++) 
+	for(j = 0; j < XPIXELS; j++)
 	{
-		for(i = 0; i < PIXBUFSIZE; i++) 
+		for(i = 0; i < PIXBUFSIZE; i++)
 		{
 			fprintf(file, "%d ",pixel_row[i]);
 		}
@@ -78,7 +78,7 @@ write_pixel_row(FILE *file, int *pixel_row, const int PIXBUFSIZE)
 	}
 }
 
-void 
+void
 copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter)
 {
 
@@ -95,7 +95,7 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter)
 	*pixel_counter = j;
 }
 
-int 
+int
 write_ppm_file(const int nx, const int ny, const int iter_num)
 //write_ppm_file(int map[NX+2][NX+2], Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], const int nx, const int ny, const int iter_num)
 {
@@ -117,13 +117,13 @@ write_ppm_file(const int nx, const int ny, const int iter_num)
 	fprintf(file, "%d %d\n",YPIXELS * ny,XPIXELS * nx);
 	fprintf(file, "%d\n",MAX_COLOR_VAL);
 
-	pixel_buffer = (int*)(malloc(sizeof(int) * PIXBUFSIZE)); 
+	pixel_buffer = (int*)(malloc(sizeof(int) * PIXBUFSIZE));
 
 	for (i = 1; i <= nx; i++)
 	{
 		for (j = 1; j <= ny; j++)
 		{
-			if(map[i][j] == 0) 
+			if(map[i][j] == 0)
 			{
 				/* color water grids with blue */
 				pixel[BLUE] = MAX_COLOR_VAL / 2;

@@ -41,7 +41,7 @@ typedef struct EquationVariables
 int readmap(const char *filename, int *nxp, int *nyp);
 int write_ppm_file(const int nx, const int ny, const int delta_t);
 void compute(int nx, int ny, EquationVariables *eq_val);
- 
+
 #if __STDC_VERSION__ >= 199901L
     #define PUMA_INLINE inline
 #elif __GNUC__

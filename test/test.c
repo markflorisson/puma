@@ -11,7 +11,7 @@
 #include "log.h"
 
 
- 
+
 /* Pointer to the file used by the tests. */
 static FILE* temp_file = NULL;
 
@@ -52,7 +52,7 @@ int clean_suite1(void)
  */
 void testReadmap(void)
 {
-   
+
   int nx,ny;
   char filename[64] = {"small.dat"};
   int i,j;
@@ -60,7 +60,7 @@ void testReadmap(void)
   int value;
   fscanf(file, "%d %d", &nx, &ny);
   int buf[nx][ny];
-	
+
 
   /* Scan in all element of the array */
   for (i = 0; i < nx; i++){
@@ -104,7 +104,7 @@ void testKernal(void)
   eqn_obj.pred_mort_rate = 0.06;
   eqn_obj.diff_rate_hares = 0.2;
   eqn_obj.diff_rate_pumas = 0.2;
-  
+
   //fscanf(file_Map, "%d %d", &nx, &ny);
   nx=4;
   ny=4;
@@ -113,7 +113,7 @@ void testKernal(void)
   Real puma[NX][NY];
   int Map[NX][NY];
 
-  
+
   /* Scan in all element of the array */
   for (i = 0; i < NX; i++){
     for (j = 0; j < NY; j++){
@@ -125,11 +125,11 @@ void testKernal(void)
       hare[i][j] =2;// value_h;
       puma[i][j] = 1;//value_p;
       Map[i][j] = 1;//value_m;
-      
-      
+
+
     }
   }
-  
+
 
 
 
@@ -156,7 +156,7 @@ void testKernal(void)
 int main()
 {
    CU_pSuite pSuite = NULL;
-   
+
    /* initialize the CUnit test registry */
    if (CUE_SUCCESS != CU_initialize_registry())
       return CU_get_error();

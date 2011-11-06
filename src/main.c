@@ -11,27 +11,27 @@
 extern float random_uniform(float max_val);
 static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename);
 
-int 
+int
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
 	int i = 0, j = 0, max_iter = 100;
 	char filename[64] = {'\0'};
 	EquationVariables eqn_obj;
-	
+
 	/* Initialize all datastructures */
 	memset(&eqn_obj,0,sizeof(eqn_obj));
 	memset(&map,0,sizeof(map));
 	memset(&hare,0,sizeof(hare));
 	memset(&puma,0,sizeof(puma));
 
-	/* 
+	/*
 		TODO: check if values are within certain boundaries,
 		For eg delta T cannot be 1 million.
 	 */
 	parse_command_line(argc, argv, &eqn_obj, filename);
 
-	if (puma_errno = readmap(filename, &nx, &ny)) 
+	if (puma_errno = readmap(filename, &nx, &ny))
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
 	}
@@ -50,6 +50,7 @@ main(int argc, char *argv[])
 		}
 	}
 
+	/* Invoke computational kernel */
 	for (i = 0; i < max_iter; i++)
 	{
 		compute(nx, ny, &eqn_obj);
@@ -67,7 +68,7 @@ main(int argc, char *argv[])
 void
 print_usage(char *argv[])
 {
-	fprintf(stdout,"Usage e.g.: %s -f file.dat <-r 0.08> <-a 0.04> <-b 0.02> <-m 0.06> <-k 0.2> <-l 0.2> <-t 0.4> \n",argv[0]); 
+	fprintf(stdout,"Usage e.g.: %s -f file.dat <-r 0.08> <-a 0.04> <-b 0.02> <-m 0.06> <-k 0.2> <-l 0.2> <-t 0.4> \n",argv[0]);
 	fprintf(stdout,"               -f : Input file for land/water bitmask\n");
 	fprintf(stdout,"               -r : rate of prey population increase\n");
 	fprintf(stdout,"               -a : predation rate coefficient\n");
@@ -82,7 +83,7 @@ void
 parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename)
 {
 	char ch = '\0';
-	
+
 	/* Set the defaults */
 	eqn_obj->time_interval= 0.4;
         eqn_obj->prey_pop_inc_rate = 0.08;
@@ -127,11 +128,11 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
 				break;
 
 			case 't':
-				eqn_obj->time_interval = atof(optarg);	
+				eqn_obj->time_interval = atof(optarg);
 				break;
 
 			case 'f':
-				strcpy(filename, optarg);	
+				strcpy(filename, optarg);
 				break;
 
 			default:
