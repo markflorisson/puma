@@ -43,8 +43,8 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 		return PUMA_ERROR_OOB;
 
 	/* Scan in all element of the array */
-	for (i = 1; i <= nx; i++) {
-		for (j = 1; j <= ny; j++) {
+	for (i = 0; i < nx; i++) {
+		for (j = 0; j < ny; j++) {
 			int value;
 
 			if ((result = fscanf(file, "%d", &value)) != 1)

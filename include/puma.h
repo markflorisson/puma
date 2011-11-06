@@ -48,14 +48,4 @@ void compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int 
     #define PUMA_INLINE __inline__
 #endif
 
-/* Some testing utilities */
-#define PUMA_FAIL_ON_ERR(expr) \
-                        {\
-                            int puma_errno = expr; \
-                            if (puma_errno) {\
-                                CU_FAIL(puma_strerror(puma_errno));\
-                                return;\
-                            }\
-                        }
-
 #endif /* for _PUMA_H */

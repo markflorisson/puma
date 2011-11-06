@@ -10,6 +10,19 @@
 
 #include "log.h"
 
+/* Unfortunately CU_FAIL /fails/ to be useful, it doesn't print the message you pass it... */
+#define fail_on_error(expr) \
+                        do {\
+                            int puma_errno = expr; \
+                            if (puma_errno) {\
+                                fputs(puma_strerror(puma_errno), stderr);\
+                                CU_FAIL("");\
+                                return;\
+                            }\
+                        } while (0)
+
+#define assert_int_equals(a, b) do { if (a != b) { CU_ASSERT_EQUAL(a, b); fprintf(stderr, "val1=%d val2=%d", a, b); } } while (0)
+
 int map[NX][NY] = {{0}};
 
 /* Pointer to the file used by the tests. */
@@ -23,8 +36,7 @@ int init_suite1(void)
 {
    if (NULL == (temp_file = fopen("temp.txt", "w+"))) {
       return -1;
-   }
-   else {
+   } else {
       return 0;
    }
 }
@@ -52,31 +64,23 @@ int clean_suite1(void)
  */
 void test_readmap(void)
 {
+    int nx, ny;
+    int i, j;
 
-  int nx,ny;
-  char *filename = "small.dat";
-  int i,j;
-  FILE *file = fopen(filename, "r");
-  int value;
-  fscanf(file, "%d %d", &nx, &ny);
-  int buf[nx][ny];
+    fail_on_error(readmap("test/test.dat", map, &nx, &ny));
+    assert_int_equals(nx, 10);
+    assert_int_equals(ny, 10);
 
-  /* Scan in all element of the array */
-  for (i = 0; i < nx; i++){
-    for (j = 0; j < ny; j++){
-      fscanf(file, "%d", &value);
-      buf[i][j] = value;
+    for(i = 0; i < nx; i++) {
+        for(j = 0; j < ny; j++) {
+            if (i == j)
+                assert_int_equals(map[i][j], 1);
+            else
+                assert_int_equals(map[i][j], 0);
+        }
     }
-  }
 
-  PUMA_FAIL_ON_ERR(readmap(filename, map, &nx, &ny));
-
-  for(i = 0; i < nx; i++){
-    for(j =0; j < ny; j++)
-      CU_ASSERT_EQUAL(buf[i][j], map[i][j]);
-  }
-
-  memset(map, 0, sizeof(map));
+    memset(map, 0, sizeof(map));
 
 }
 
@@ -171,10 +175,11 @@ int main()
 
    /* add the tests to the suite */
    /* NOTE - ORDER IS IMPORTANT - MUST TEST fread() AFTER fprintf() */
-   if ((NULL == CU_add_test(pSuite, "test of function readmap in I/O", test_readmap)) ||
-       (NULL == CU_add_test(pSuite, "test of kernal code", test_kernel )))
+   if (!CU_add_test(pSuite, "test of function readmap in I/O", test_readmap) ||
+       0)//!CU_add_test(pSuite, "test of kernel code", test_kernel))
    {
       CU_cleanup_registry();
+      fputs(CU_get_error_msg(), stderr);
       return CU_get_error();
    }
 

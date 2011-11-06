@@ -21,7 +21,7 @@ TEST_SRC=\
 	$(PROJ_TEST)/test.c \
 	$(CODE)
 
-TEST_OBJ=$(TEST_SRC:.c=.o) #$(PROJ_TEST)/test.c io.o pde.o randgen.o puma.o
+TEST_OBJ=$(TEST_SRC:.c=.o)
 
 OBJ=	$(SRC:.c=.o)
 
@@ -33,7 +33,7 @@ OBJ=	$(SRC:.c=.o)
 
 all:	$(EXE) test
 
-test: $(TEST_OBJ)
+test: $(TEST_OBJ) $(TEST_SRC)
 	$(CC) $(CFLAGS) -c $(PROJ_TEST)/test.c -o $(PROJ_TEST)/test.o
 	$(CC) $(CFLAGS) -o $@ $(TEST_OBJ) $(TEST_LDFLAGS)
 
@@ -43,7 +43,7 @@ $(EXE):	$(OBJ)
 $(OBJ) $(TEST_OBJ):	$(MF) $(INC)
 
 all:
-	cp -f $(EXE) $(PROJ_BIN)
+	cp -f $(EXE) test $(PROJ_BIN)
 
 clean:
-	rm -f $(OBJ) $(EXE) $(TEST_OBJ) core
+	rm -f $(OBJ) $(EXE) test $(TEST_OBJ) core $(PROJ_BIN)/*
