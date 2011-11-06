@@ -52,6 +52,7 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 			map[i][j] = value;
 		}
 	}
+	fclose(file);
 
 	*nxp = nx;
 	*nyp = ny;
