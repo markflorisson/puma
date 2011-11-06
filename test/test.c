@@ -1,35 +1,186 @@
-#include<stdio.h>
-#include<string.h>
-#include"CUnit/Basic.h"
+#include <puma.h>
+#include <stdio.h>
+#include <string.h>
+#include "CUnit/Basic.h"
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include "log.h"
 
 
-int shun[][];
+ 
+/* Pointer to the file used by the tests. */
+static FILE* temp_file = NULL;
+
+/* The suite initialization function.
+ * Opens the temporary file used by the tests.
+ * Returns zero on success, non-zero otherwise.
+ */
+int init_suite1(void)
+{
+   if (NULL == (temp_file = fopen("temp.txt", "w+"))) {
+      return -1;
+   }
+   else {
+      return 0;
+   }
+}
+
+/* The suite cleanup function.
+ * Closes the temporary file used by the tests.
+ * Returns zero on success, non-zero otherwise.
+ */
+int clean_suite1(void)
+{
+   if (0 != fclose(temp_file)) {
+      return -1;
+   }
+   else {
+      temp_file = NULL;
+      return 0;
+   }
+}
 
 
-
-//http://cunit.sourceforge.net/doc/writing_tests.html
-//http://cunit.sourceforge.net/example.html
-
-
-int main(){
-
-	double expect[4][4];
-	double hare[4][4], puma[4][4];
+/* Simple test of fread().
+ * Reads the data previously written by testFPRINTF()
+ * and checks whether the expected characters are present.
+ * Must be run after testFPRINTF().
+ */
+void testReadmap(void)
+{
+   
+  int nx,ny;
+  char filename[64] = {"small.dat"};
+  int i,j;
+  FILE *file = fopen(filename, "r");
+  int value;
+  fscanf(file, "%d %d", &nx, &ny);
+  int buf[nx][ny];
 	
-	
-	
-	jmp_buf buf;
-	int i;
-	
-	expect = compute(double hare[NX][NY], double puma[NX][NY], int land[NX][NY], int nx, int ny, int delta_t, int total_time, int r, 
-	    int a, int k, int b, int m, int l)
-	if (i == 0) {
-	  run_other_func();
-	  CU_PASS("run_other_func() succeeded.");
-	}
-	else
-	  CU_FAIL("run_other_func() issued longjmp.");
-		   
-	
+
+  /* Scan in all element of the array */
+  for (i = 0; i < nx; i++){
+    for (j = 0; j < ny; j++){
+      fscanf(file, "%d", &value);
+      buf[i][j] = value;
+    }
+  }
+
+  readmap(map, filename, &nx, &ny);
+
+  for(i = 0; i < nx; i++){
+    for(j =0; j < ny; j++)
+      CU_ASSERT(buf[i][j]==map[i][j]);
+  }
 
 }
+
+
+void testKernal(void)
+{
+  int nx,ny;
+  int i,j;
+  int value_s,value_p,value_h,value_m;
+  int max_iter=100;
+  char filename_Solution[64] = {"solution.dat"};
+  char filename_Hare[64] = {"Hare.dat"};
+  char filename_Puma[64] = {"Puma.dat"};
+  char filename_Map[64] = {"Map.dat"};
+  EquationVariables eqn_obj;
+
+  FILE *file_Solution = fopen(filename_Solution, "r");
+  FILE *file_Hares = fopen(filename_Hare, "r");
+  FILE *file_Puma = fopen(filename_Puma, "r");
+  FILE *file_Map = fopen(filename_Map, "r");
+
+  eqn_obj.time_interval= 0.4;
+  eqn_obj.prey_pop_inc_rate = 0.08;
+  eqn_obj.pred_rate_coeff = 0.04;
+  eqn_obj.rep_rate_pred = 0.02;
+  eqn_obj.pred_mort_rate = 0.06;
+  eqn_obj.diff_rate_hares = 0.2;
+  eqn_obj.diff_rate_pumas = 0.2;
+  
+  //fscanf(file_Map, "%d %d", &nx, &ny);
+  nx=4;
+  ny=4;
+  Real solution[NX][NY];
+  Real hare[NX][NY];
+  Real puma[NX][NY];
+  int Map[NX][NY];
+
+  
+  /* Scan in all element of the array */
+  for (i = 0; i < NX; i++){
+    for (j = 0; j < NY; j++){
+      fscanf(file_Solution, "%f", &value_s);
+      fscanf(file_Hares, "%d", &value_h);
+      fscanf(file_Puma, "%d", &value_p);
+      fscanf(file_Map, "%d", &value_m);
+      solution[i][j] =2;// value_s;
+      hare[i][j] =2;// value_h;
+      puma[i][j] = 1;//value_p;
+      Map[i][j] = 1;//value_m;
+      
+      
+    }
+  }
+  
+
+
+
+  //for (i = 0; i < max_iter; i++)
+  // compute(hare, puma, map, nx, ny, &eqn_obj);
+
+   for(i = 0; i < nx; i++){
+     for(j =0; j < ny; j++)
+       CU_ASSERT(solution[i][j]==hare[i][j]);
+   }
+
+}
+
+
+
+
+
+/* The main() function for setting up and running the tests.
+ * Returns a CUE_SUCCESS on successful running, another
+ * CUnit error code on failure.
+ */
+
+
+int main()
+{
+   CU_pSuite pSuite = NULL;
+   
+   /* initialize the CUnit test registry */
+   if (CUE_SUCCESS != CU_initialize_registry())
+      return CU_get_error();
+
+   /* add a suite to the registry */
+   pSuite = CU_add_suite("Suite_1", init_suite1, clean_suite1);
+   if (NULL == pSuite) {
+      CU_cleanup_registry();
+      return CU_get_error();
+   }
+
+   /* add the tests to the suite */
+   /* NOTE - ORDER IS IMPORTANT - MUST TEST fread() AFTER fprintf() */
+   if ((NULL == CU_add_test(pSuite, "test of function readmap in I/O", testReadmap)) ||
+       (NULL == CU_add_test(pSuite, "test of kernal code",testKernal )))
+   {
+      CU_cleanup_registry();
+      return CU_get_error();
+   }
+
+   /* Run all tests using the CUnit Basic interface */
+   CU_basic_set_mode(CU_BRM_VERBOSE);
+   CU_basic_run_tests();
+   CU_cleanup_registry();
+   return CU_get_error();
+}
+
