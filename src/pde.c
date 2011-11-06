@@ -36,15 +36,6 @@ compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
 		}
 	}
 
-    /* Replace the old hare and puma matrices by the new two. */
-	/*for (i = 1; i < nx - 1; i++)
-	{
-		for (j = 1; j < ny - 1; j++)
-		{
-			hare[i][j] = hare_new[i][j];
-			puma[i][j] = puma_new[i][j];
-		}
-	}*/
 	memcpy(hare,hare_new,sizeof(hare_new));
 	memcpy(puma,puma_new,sizeof(puma_new));
 

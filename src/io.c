@@ -7,7 +7,6 @@
 #define YPIXELS 12
 
 #define MAX_COLOR_VAL 50
-#define MAX_DENSITY 5.0
 
 enum { RED, GREEN, BLUE };
 
@@ -53,6 +52,7 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 			map[i][j] = value;
 		}
 	}
+	fclose(file);
 
 	*nxp = nx;
 	*nyp = ny;
