@@ -1,13 +1,14 @@
 #include <puma.h>
 #include <stdio.h>
 #include <string.h>
-#include "CUnit/Basic.h"
-
 #include <unistd.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "CUnit/Basic.h"
+#include "CUnit/CUnit.h"
 #include "log.h"
 
 /* Unfortunately CU_FAIL /fails/ to be useful, it doesn't print the message you pass it... */
@@ -135,19 +136,19 @@ void test_kernel(void)
             fscanf(file_hares, "%d", &value_h);
             fscanf(file_puma, "%d", &value_p);
             fscanf(file_map, "%d", &value_m);
-            solution[i][j] =2;// value_s;
-            hare[i][j] =2;// value_h;
-            puma[i][j] = 1;//value_p;
-            map[i][j] = 1;//value_m;
+            solution[i][j] = value_s;
+            hare[i][j] = value_h;
+            puma[i][j] = value_p;
+            map[i][j] = value_m;
         }
     }
 
     for (i = 0; i < max_iter; i++)
-     compute(map, puma, hare, nx, ny, &eqn_obj);
+       compute(map, puma, hare, nx, ny, &eqn_obj);
 
-     for(i = 0; i < nx; i++){
+    for(i = 0; i < nx; i++){
         for(j =0; j < ny; j++) {
-            CU_ASSERT_EQUAL(solution[i][j], hare[i][j]);
+            CU_ASSERT_DOUBLE_EQUAL(solution[i][j], hare[i][j], 1.0e-5);
         }
     }
 
