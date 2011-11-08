@@ -54,7 +54,7 @@ main(int argc, char *argv[])
 		compute(map, puma, hare, nx, ny, &eqn_obj);
 
 		debug_msg("[%s:%d]: Writing ppm for iter %d\n",__FILE__,__LINE__,i);
-		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, i)))
+//		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, i)))
 		{
 			error_msg("[%s:%d]: Error writing ppm file for iter %d: %s\n",__FILE__,__LINE__,1,puma_strerror(puma_errno));
             exit(EXIT_FAILURE);

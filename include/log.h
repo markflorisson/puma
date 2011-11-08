@@ -9,10 +9,10 @@ getTimeStamp(char *time_stamp)
 {
 	time_t current_time;
 
-	current_time = time(0);
-	strftime(time_stamp,9,"%H:%M:%S",localtime(&current_time));
+	current_time = time(NULL);
+	strftime(time_stamp, 9, "%H:%M:%S", localtime(&current_time));
 
-	return(time_stamp);
+	return time_stamp;
 }
 
 
@@ -24,12 +24,12 @@ debug_msg(const char* msg, ...)
 	char time_stamp[16] = {'\0'};
 	char line[4096] = {'\0'};
 
-	getTimeStamp(time_stamp);
+	// getTimeStamp(time_stamp);
 
 	va_start(list,msg);
 #ifdef DEBUG
-	sprintf(line,"%s:%s",time_stamp,msg);
-	vfprintf(stdout,line,list);
+	sprintf(line, "%s:%4000s", time_stamp, msg);
+	vfprintf(stdout, line, list);
 #endif
 	va_end(list);
 }
