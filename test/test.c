@@ -29,6 +29,13 @@
         }\
     } while (0)
 
+#define PUMA_ASSERT_DOUBLE_EQUAL(a, b) if (fabs(a - b) > 0.1e-5) {\
+    fprintf(stderr, "\n    !!! %lf != %lf !!!\n", (double) a, (double) b);\
+    CU_FAIL(#a " " #b);\
+    return;\
+}
+     
+
 int map[NX][NY] = {{0}};
 REAL solution[NX][NY] = {{0}};
 REAL hare[NX][NY] = {{0}};
@@ -44,20 +51,13 @@ puma_open(const char *filename, const char *mode, FILE **file)
     return PUMA_NOERR;
 }
 
-/* Pointer to the file used by the tests. */
-static FILE* temp_file = NULL;
-
 /* The suite initialization function.
  * Opens the temporary file used by the tests.
  * Returns zero on success, non-zero otherwise.
  */
 int init_suite1(void)
 {
-   if (NULL == (temp_file = fopen("temp.txt", "w+"))) {
-      return -1;
-   } else {
-      return 0;
-   }
+    return 0;
 }
 
 /* The suite cleanup function.
@@ -66,13 +66,7 @@ int init_suite1(void)
  */
 int clean_suite1(void)
 {
-   if (0 != fclose(temp_file)) {
-      return -1;
-   }
-   else {
-      temp_file = NULL;
-      return 0;
-   }
+    return 0;
 }
 
 
@@ -108,7 +102,8 @@ void test_kernel(void)
 {
     int nx, ny;
     int i, j;
-    int value_s, value_p, value_h, value_m;
+    int value_m; 
+    float value_p, value_h, value_s;
     int max_iter=100;
     EquationVariables eqn_obj;
 
@@ -119,7 +114,7 @@ void test_kernel(void)
     fail_on_error(puma_open("test/Puma.dat", "r", &file_puma));
     fail_on_error(puma_open("test/Map.dat", "r", &file_map));
 
-    eqn_obj.time_interval= 0.4;
+    eqn_obj.time_interval= 0.004;
     eqn_obj.prey_pop_inc_rate = 0.08;
     eqn_obj.pred_rate_coeff = 0.04;
     eqn_obj.rep_rate_pred = 0.02;
@@ -127,14 +122,14 @@ void test_kernel(void)
     eqn_obj.diff_rate_hares = 0.2;
     eqn_obj.diff_rate_pumas = 0.2;
 
-    fscanf(file_map, "%d %d", &nx, &ny);
+    fscanf(file_map, "%d %d", &ny, &nx);
 
     /* Scan in all element of the array */
     for (i = 0; i < NX; i++){
         for (j = 0; j < NY; j++){
-            fscanf(file_solution, "%d", &value_s);
-            fscanf(file_hares, "%d", &value_h);
-            fscanf(file_puma, "%d", &value_p);
+            fscanf(file_solution, "%f", &value_s);
+            fscanf(file_hares, "%f", &value_h);
+            fscanf(file_puma, "%f", &value_p);
             fscanf(file_map, "%d", &value_m);
             solution[i][j] = value_s;
             hare[i][j] = value_h;
@@ -148,7 +143,8 @@ void test_kernel(void)
 
     for(i = 0; i < nx; i++){
         for(j =0; j < ny; j++) {
-            CU_ASSERT_DOUBLE_EQUAL(solution[i][j], hare[i][j], 1.0e-5);
+            PUMA_ASSERT_DOUBLE_EQUAL(solution[i][j], hare[i][j]);
+           // printf("%d ",hare[i][j]);
         }
     }
 
