@@ -26,6 +26,7 @@
         if (a != b) {\
             CU_ASSERT_EQUAL(a, b);\
             fprintf(stderr, "\n    !!! val1=%d val2=%d", a, b);\
+			return;\
         }\
     } while (0)
 
@@ -84,8 +85,8 @@ void test_readmap(void)
     assert_int_equals(nx, 10);
     assert_int_equals(ny, 10);
 
-    for(i = 0; i < nx; i++) {
-        for(j = 0; j < ny; j++) {
+    for(i = 1; i <= nx; i++) {
+        for(j = 1; j <= ny; j++) {
             if (i == j)
                 assert_int_equals(map[i][j], 1);
             else
@@ -93,7 +94,7 @@ void test_readmap(void)
         }
     }
 
-    memset(map, 0, sizeof(map));
+    //memset(map, 0, sizeof(map));
 
 }
 
@@ -122,15 +123,16 @@ void test_kernel(void)
     eqn_obj.diff_rate_hares = 0.2;
     eqn_obj.diff_rate_pumas = 0.2;
 
-    fscanf(file_map, "%d %d", &ny, &nx);
+    assert_int_equals(fscanf(file_map, "%d %d", &ny, &nx), 2);
 
     /* Scan in all element of the array */
-    for (i = 0; i < NX; i++){
-        for (j = 0; j < NY; j++){
-            fscanf(file_solution, "%f", &value_s);
-            fscanf(file_hares, "%f", &value_h);
-            fscanf(file_puma, "%f", &value_p);
-            fscanf(file_map, "%d", &value_m);
+    for (i = 1; i <= nx; i++){
+        for (j = 1; j <= ny; j++){
+            assert_int_equals(fscanf(file_solution, "%f", &value_s), 1);
+            assert_int_equals(fscanf(file_hares, "%f", &value_h), 1);
+            assert_int_equals(fscanf(file_puma, "%f", &value_p), 1);
+            assert_int_equals(fscanf(file_map, "%d", &value_m), 1);
+
             solution[i][j] = value_s;
             hare[i][j] = value_h;
             puma[i][j] = value_p;
@@ -138,13 +140,13 @@ void test_kernel(void)
         }
     }
 
+
     for (i = 0; i < max_iter; i++)
        compute(map, puma, hare, nx, ny, &eqn_obj);
 
-    for(i = 0; i < nx; i++){
-        for(j =0; j < ny; j++) {
+    for(i = 1; i <= nx; i++){
+        for(j = 1; j <= ny; j++) {
             PUMA_ASSERT_DOUBLE_EQUAL(solution[i][j], hare[i][j]);
-           // printf("%d ",hare[i][j]);
         }
     }
 
