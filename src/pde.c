@@ -1,7 +1,7 @@
 #include <puma.h>
 
 /* Matrices used in compute function. */
-REAL hare_new[NX+2][NY+2] = {{0}}, puma_new[NX+2][NY+2] = {{0}};
+REAL hare_new[NX][NY] = {{0}}, puma_new[NX][NY] = {{0}};
 
 void
 compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
@@ -19,9 +19,9 @@ compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
 	k = eq_val -> diff_rate_hares;
 
 	/* Compute the densities for one iteration. */
-	for (i = 1; i <= nx ; i++)
+	for (i = 0; i < nx ; i++)
 	{
-		for (j = 1; j <= ny; j++)
+		for (j = 0; j < ny; j++)
 		{
 			/* If cell[i][j] is water, skip this cell. */
 			if (map[i][j] == 0) continue;

@@ -1,7 +1,7 @@
 MF=	Makefile
 
 CC=cc
-CFLAGS+=	-g -I$(PROJ_INCLUDE) -DDEBUG
+CFLAGS+= -g -I$(PROJ_INCLUDE) -DDEBUG 
 LDLAGS+= -lm
 TEST_LDFLAGS=$(LDFLAGS) -lcunit
 

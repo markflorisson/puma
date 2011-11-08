@@ -9,6 +9,7 @@
 #include "puma.h"
 
 extern float random_uniform(float max_val);
+extern void rinit(int ijkl);
 static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename);
 
 int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
@@ -18,8 +19,14 @@ int
 main(int argc, char *argv[])
 {
 	int nx = 0, ny = 0, puma_errno = 0;
-	int i = 0, j = 0, max_iter = 100;
+	int i = 0, j = 0;
+	const int max_iter = 500;
 	char filename[PUMA_FILENAME_SIZE] = {'\0'};
+
+	int write_interval = 0;
+	float time_interval = 0.0;
+	float delta_t = 0.0;
+	
 	EquationVariables eqn_obj = { 0 };
 
 	/*
@@ -31,33 +38,41 @@ main(int argc, char *argv[])
 	if ((puma_errno = readmap(filename, map, &nx, &ny)))
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
-        exit(EXIT_FAILURE);
+        	exit(EXIT_FAILURE);
 	}
 
 	debug_msg("[%s:%d]: nx: %d, ny: %d\n",__FILE__,__LINE__,nx,ny);
+	
+
+	rinit(12345);
 
 	/* Init with random values for the densities of hare and puma within 0 and 5 */
-	for(i=1;i<=nx;i++)
-	{
-		for(j=1;j<=ny;j++)
+	for(i = 0;i < nx;i++)
+	{ 
+		for(j = 0;j < ny;j++)
 		{
-			//hare[i][j] = 2.0;
-			//puma[i][j] = 4.0;
-			hare[i][j] = random_uniform(MAX_DENSITY);
-			puma[i][j] = random_uniform(MAX_DENSITY);
+			if(map[i][j] == 0) continue;
+
+			hare[i][j] = 4.5;
+			puma[i][j] = 1.5;
+			//hare[i][j] = random_uniform(MAX_DENSITY);
+			//puma[i][j] = random_uniform(MAX_DENSITY);
 		}
 	}
 
-	/* Invoke computational kernel */
-	for (i = 0; i < max_iter; i++)
+	delta_t = eqn_obj.time_interval;
+	for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
 	{
+		++write_interval;
 		compute(map, puma, hare, nx, ny, &eqn_obj);
 
-		debug_msg("[%s:%d]: Writing ppm for iter %d\n",__FILE__,__LINE__,i);
-		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, i)))
+		if( (write_interval % 25) != 0) continue;
+		
+		debug_msg("[%s:%d]: Writing ppm for time_interval %f\n",__FILE__,__LINE__,time_interval);
+		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, time_interval)))
 		{
 			error_msg("[%s:%d]: Error writing ppm file for iter %d: %s\n",__FILE__,__LINE__,1,puma_strerror(puma_errno));
-            exit(EXIT_FAILURE);
+            		exit(EXIT_FAILURE);
 		}
 	}
 
@@ -135,7 +150,7 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
 				break;
 
 			default:
-				printf("Setting defaults for equations params\n");
+				debug_msg("[%s:%d]: Setting defaults for equations params\n",__FILE__,__LINE__);
 				break;
 		}
 	}

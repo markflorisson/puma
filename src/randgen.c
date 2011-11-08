@@ -19,6 +19,10 @@ float uni_u[98];	/* Was U(97) in Fortran version -- too lazy to fix */
 float uni_c, uni_cd, uni_cm;
 int uni_ui, uni_uj;
 
+float random_uniform(float max_val);
+void rstart(int i, int j, int k, int l);
+void rinit(int ijkl);
+
 float random_uniform(float max_val)
 {
 	float luni;			/* local variable for uni */

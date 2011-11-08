@@ -34,12 +34,9 @@ typedef struct EquationVariables
 
 } EquationVariables;
 
-//int readmap(int map[NX+2][NY+2], const char *filename, int *nxp, int *nyp);
-//int write_ppm_file(int map[NX+2][NX+2], double hare[NX+2][NY+2], double puma[NX+2][NY+2], const int nx, const int ny, const int delta_t);
-//void compute(Real hare[NX+2][NY+2], Real puma[NX+2][NY+2], int land[NX+2][NY+2], int nx, int ny, EquationVariables *eq_val);
 int readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp);
 int write_ppm_file(int map[NX][NX], REAL hare[NX][NY], REAL puma[NX][NY],
-                   const int nx, const int ny, const int iter_num);
+                   const int nx, const int ny, const float iter_num);
 void compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
              EquationVariables *eq_val);
 
