@@ -19,14 +19,14 @@ compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
 	k = eq_val -> diff_rate_hares;
 
 	/* Compute the densities for one iteration. */
-	for (i = 0; i < nx ; i++)
+	for (i = 1; i <= nx ; i++)
 	{
-		for (j = 0; j < ny; j++)
+		for (j = 1; j <= ny; j++)
 		{
 			/* If cell[i][j] is water, skip this cell. */
 			if (map[i][j] == 0) continue;
 
-			int n = map[i - 1][j] + map[i + 1][j] + map[i][j - 1] + map[i][j + 1];
+			n = map[i - 1][j] + map[i + 1][j] + map[i][j - 1] + map[i][j + 1];
 
 			hare_new[i][j] = hare[i][j] + delta_t * (r * hare[i][j] - a * hare[i][j] * puma[i][j] +
 					k * (hare[i - 1][j] + hare[i + 1][j] + hare[i][j - 1] + hare[i][j + 1] - n * hare[i][j]));

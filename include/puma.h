@@ -1,6 +1,6 @@
 #ifndef _PUMA_H
 
-#define NX 2000
+#define NX 2002
 #define NY NX
 
 #include <stdio.h>

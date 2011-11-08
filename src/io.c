@@ -39,12 +39,12 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 		return fscanf_error(file, result);
 
 	/* Validate the axes */
-	if (nx < 0 || ny < 0 || nx > NX || ny > NY)
+	if (nx < 0 || ny < 0 || nx > NX - 2 || ny > NY - 2)
 		return PUMA_ERROR_OOB;
 
 	/* Scan in all element of the array */
-	for (i = 0; i < nx; i++) {
-		for (j = 0; j < ny; j++) {
+	for (i = 1; i <= nx; i++) {
+		for (j = 1; j <= ny; j++) {
 			int value = 0;
 
 			if ((result = fscanf(file, "%d", &value)) != 1)
@@ -99,18 +99,18 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter, const int scale_f
 	*pixel_counter = j;
 }
 
-void writeMatrix(REAL matrix[NX][NY], const char* filename, const int iter)
+void writeMatrix(REAL matrix[NX][NY], const char* filename, const float iter, const int nx, const int ny)
 {
 	char name[128] = {'\0'};
 	int i = 0, j = 0;
 	FILE *file = NULL;
 
-	sprintf(name,"%s_%d.out",filename,iter);
+	sprintf(name,"%s_%03d.M.dat",filename,(int)iter);
 	file = fopen(name, "w");
 	
-	for(i = 0; i < NX; i++)
+	for(i = 1; i <= nx; i++)
 	{
-		for(j = 0; j < NX; j++)
+		for(j = 1; j <= ny; j++)
 		{
 			fprintf(file, "%f ", matrix[i][j]);
 		}
@@ -137,8 +137,8 @@ write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int 
 	int scale_factor = 0;
 	scale_factor = MAX_SIZE/ny;
 
-	//writeMatrix(hare,"hare",delta_t);
-	//writeMatrix(puma,"puma",delta_t);
+	writeMatrix(hare,"hare",delta_t, nx, ny);
+	writeMatrix(puma,"puma",delta_t, nx, ny);
 	//writeMatrix(puma,"map",delta_t);
 
 	if(scale_factor <= 0) scale_factor = 1; /* In case the array is bigger than MAX_SIZE */
@@ -169,9 +169,9 @@ write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int 
 
 	pixel_buffer = (int*) malloc(sizeof(int) * PIXBUFSIZE);
 
-	for (i = 0; i < nx; i++)
+	for (i = 1; i <= nx; i++)
 	{
-		for (j = 0; j < ny; j++)
+		for (j = 1; j <= ny; j++)
 		{
 			if (map[i][j] == 0)
 			{

@@ -47,11 +47,11 @@ main(int argc, char *argv[])
 	rinit(12345);
 
 	/* Init with random values for the densities of hare and puma within 0 and 5 */
-	for(i = 0;i < nx;i++)
+	for (i = 1; i <= nx; i++)
 	{ 
-		for(j = 0;j < ny;j++)
+		for (j = 1; j <= ny; j++)
 		{
-			if(map[i][j] == 0) continue;
+			if (map[i][j] == 0) continue;
 
 			hare[i][j] = 4.5;
 			puma[i][j] = 1.5;
