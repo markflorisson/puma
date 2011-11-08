@@ -99,7 +99,7 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
 	char ch = '\0';
 
 	/* Set the defaults */
-	eqn_obj->time_interval= 0.4;
+	eqn_obj->time_interval= 0.004;
         eqn_obj->prey_pop_inc_rate = 0.08;
         eqn_obj->pred_rate_coeff = 0.04;
         eqn_obj->rep_rate_pred = 0.02;
