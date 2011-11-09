@@ -10,7 +10,7 @@ compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
 	int n, i, j;
 	REAL delta_t, r, a, b, m, k, l;
 
-	delta_t = eq_val -> time_interval;
+	delta_t = eq_val -> delta_t;
 	r = eq_val -> prey_pop_inc_rate;
 	a = eq_val -> pred_rate_coeff;
 	b = eq_val -> rep_rate_pred;

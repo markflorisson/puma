@@ -10,7 +10,7 @@
 
 extern float random_uniform(float max_val);
 extern void rinit(int ijkl);
-static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename);
+static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename);
 
 int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
 REAL hare[NX][NY] = {{0}}, puma[NX][NY] = {{0}}; /* Matrices of hare and puma densities */
@@ -23,6 +23,7 @@ main(int argc, char *argv[])
 	const int max_iter = 500;
 	char filename[PUMA_FILENAME_SIZE] = {'\0'};
 
+	int time_step_size = 0;
 	int write_interval = 0;
 	float time_interval = 0.0;
 	float delta_t = 0.0;
@@ -33,7 +34,7 @@ main(int argc, char *argv[])
 		TODO: check if values are within certain boundaries,
 		For eg delta T cannot be 1 million.
 	 */
-	parse_command_line(argc, argv, &eqn_obj, filename);
+	parse_command_line(argc, argv, &eqn_obj, &time_step_size, filename);
 
 	if ((puma_errno = readmap(filename, map, &nx, &ny)))
 	{
@@ -44,7 +45,7 @@ main(int argc, char *argv[])
 	debug_msg("[%s:%d]: nx: %d, ny: %d\n",__FILE__,__LINE__,nx,ny);
 	
 
-	rinit(12345);
+	rinit(time(NULL)/2);
 
 	/* Init with random values for the densities of hare and puma within 0 and 5 */
 	for (i = 1; i <= nx; i++)
@@ -53,20 +54,20 @@ main(int argc, char *argv[])
 		{
 			if (map[i][j] == 0) continue;
 
-			hare[i][j] = 4.5;
-			puma[i][j] = 1.5;
-			//hare[i][j] = random_uniform(MAX_DENSITY);
-			//puma[i][j] = random_uniform(MAX_DENSITY);
+			//hare[i][j] = 4.5;
+			//puma[i][j] = 1.5;
+			hare[i][j] = random_uniform(MAX_DENSITY);
+			puma[i][j] = random_uniform(MAX_DENSITY);
 		}
 	}
 
-	delta_t = eqn_obj.time_interval;
+	delta_t = eqn_obj.delta_t;
 	for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
 	{
 		++write_interval;
 		compute(map, puma, hare, nx, ny, &eqn_obj);
 
-		if( (write_interval % 25) != 0) continue;
+		if( (write_interval % time_step_size) != 0) continue;
 		
 		debug_msg("[%s:%d]: Writing ppm for time_interval %f\n",__FILE__,__LINE__,time_interval);
 		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, time_interval)))
@@ -90,16 +91,18 @@ print_usage(char *argv[])
 	fprintf(stdout,"               -m : predator mortality rate\n");
 	fprintf(stdout,"               -k : diffusion rate of hares\n");
 	fprintf(stdout,"               -l : diffusion rate of predators\n");
+	fprintf(stdout,"               -d : Delta T\n");
 	fprintf(stdout,"               -t : Timestep size\n");
 }
 
 void
-parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *filename)
+parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename)
 {
 	char ch = '\0';
 
 	/* Set the defaults */
-	eqn_obj->time_interval= 0.004;
+	*time_step_size = 20;
+	eqn_obj->delta_t = 0.004;
         eqn_obj->prey_pop_inc_rate = 0.08;
         eqn_obj->pred_rate_coeff = 0.04;
         eqn_obj->rep_rate_pred = 0.02;
@@ -108,7 +111,7 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
         eqn_obj->diff_rate_pumas = 0.2;
 
 
-	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:t:f:")) != -1 )
+	while((ch = (char) getopt(argc, argv, "hr:a:b:m:k:l:t:f:d:")) != -1 )
 	{
 		switch(ch)
 		{
@@ -141,12 +144,16 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, char *fil
 				eqn_obj->diff_rate_pumas = atof(optarg);
 				break;
 
-			case 't':
-				eqn_obj->time_interval = atof(optarg);
+			case 'd':
+				eqn_obj->delta_t = atof(optarg);
 				break;
 
 			case 'f':
 				strncpy(filename, optarg, PUMA_FILENAME_SIZE);
+				break;
+
+			case 't':
+				*time_step_size = atoi(optarg);
 				break;
 
 			default:

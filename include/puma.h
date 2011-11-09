@@ -24,7 +24,7 @@ char *puma_strerror(int);
 
 typedef struct EquationVariables
 {
-        float time_interval;
+	float delta_t;
         float prey_pop_inc_rate;
         float pred_rate_coeff;
         float rep_rate_pred;

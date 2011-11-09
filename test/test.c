@@ -115,7 +115,7 @@ void test_kernel(void)
     fail_on_error(puma_open("test/Puma.dat", "r", &file_puma));
     fail_on_error(puma_open("test/Map.dat", "r", &file_map));
 
-    eqn_obj.time_interval= 0.004;
+    eqn_obj.delta_t = 0.004;
     eqn_obj.prey_pop_inc_rate = 0.08;
     eqn_obj.pred_rate_coeff = 0.04;
     eqn_obj.rep_rate_pred = 0.02;
