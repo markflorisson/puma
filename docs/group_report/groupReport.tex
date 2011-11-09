@@ -1,0 +1,262 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{epcc}
+\usepackage{graphicx}
+
+
+
+\begin{document}
+
+\title{Coursework for Programming Skills}
+\author{Nikilesh Balakrishnan\\
+        Mark Florisson\\
+        Dante Gama Dessavre\\
+        He Li\\
+        Shun Liang\\
+        Sinan Shi}
+\date{\today}
+
+\makeEPCCtitle
+
+\thispagestyle{empty}
+
+\newpage
+
+\pagenumbering{roman}
+
+\tableofcontents
+
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+The object of this coursework is to implement a sequential version of a two-dimensional predator-prey model with spatial diffusion. The governing equations for this problem are:
+
+\begin{equation}
+\frac{\partial H}{\partial t}=rH-aHP+k\left(\frac{\partial^2 H}{\partial^2 x}+\frac{\partial^2 H}{\partial^2 y}\right)\\
+\end{equation}
+
+where $H$ is the density of hares (prey) and $P$ the density of pumas (predators). $r$ is the intrinsic rate of prey population increase, $a$ the predation rate coefficient, $b$ the reproduction rate of predators per one prey eaten and m the predator mortality rate. $k$ and $l$ are the diffusion rates for the two species.
+
+Even though this is not a simple problem to analyze from a theoretical perspective, a lot can be learned from a simplification of it. If we assume that both initial densities of hares and pumas are uniform, then the diffusion term in equation (1) has no effect, so the problem is reduced to:
+
+\begin{equation}
+\frac{\partial H}{\partial t}=rH-aHP
+\end{equation}
+
+\begin{equation}
+\frac{\partial P}{\partial t}=bHP-mP
+\end{equation}
+
+This are the Lotka-Volterra equations for prey-predator systems. After doing some mathematical analysis using the parameters provided in the handout, there are two stable points. The first is (0,0) which is a saddle point attracting vectors in the y axis and repelling them in the x axis. The second is (3,2) which is a neutrally stable point, which means that cycles are formed around this point with a counter clockwise direction. The vector field and a sample cycle is shown in Figure 1. All this analysis proved useful during testing of the code.  %The vector field characterizing the solutions to equations (3) and (4) using the parameters given in the coursework handout can be seen in Figure 1. 
+
+%\begin{figure}[hb]
+%    \centering
+%    \includegraphics[scale=0.75]{images/sage0.png}
+%    \caption{Vector field of equation 2}
+%\end{figure}
+
+\clearpage
+
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.75]{images/sage2.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+
+
+\section{Planning and Task Division}
+
+The Systems Modeling Language standard was utilized for designing the software, since it is a modification of UML that can be much better adapted to non object oriented software. 
+
+The block diagram of the system can be seen in Figure 2. There are four main blocks or components: an input/output (I/O) library, the partial differential equation (PDE) computation kernel, the main simulator and a unit testing component.
+
+The I/O library (Figure 3) consists of two main elements. Firstly there is the read function which accepts the matrixes that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
+
+The PDE component (Figure 4) consists mainly of the compute function that implements the approximation formula for estimating the solution to the partial differential equations that model the problem.
+
+The main component takes care of parsing the user input and printing the usage, but its main purpose is to utilize the I/O and PDE components in order to solve the problem. The internal block diagram can be seen in Figure 5. In there a flow diagram of how the main component can also be seen.
+
+Finally, the figure 6 details de unit testing component, whose main element is similar to the one in the main program's component, but it has additional testing elements and is completely automated, so it doesn't need to parse the user input.
+
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/blockdesign.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/bd1.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/bd2.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/bd3.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/bd4.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\clearpage
+
+
+\subsection{Task Division}
+
+Work on the components was divided as follows:
+
+\begin{tabular}{ | l || l | }
+    \hline
+    Input/Output  & Mark and Nikilesh \\
+    \hline
+    Computational Kernel & Shun and He \\
+    \hline
+    Error Testing & Sinan and Dante \\
+    \hline
+\end{tabular}
+
+%\begin{figure}
+%
+%\begin{center}
+%\resizebox{0.30\hsize}{!}{\includegraphics{logos/eucrest}}
+%\end{center}
+%
+%\caption{The University Crest}
+%\label{fig:eucrest}
+%
+%\end{figure}
+
+\section{Implementation and documenting}
+
+The implementation was made in the C language, with an additional Matlab program to generate the test cases. 
+
+\subsection{Data Structures}
+
+The map is modeled as a grid of land/water cells and implemented as two-dimensional $C$ array. The population densities of predators and preys are modeled in the same way. The \texttt{Real} type defined in a macro represents the value in the density grids, so different floating point precision  can be specified in compile time. 
+
+A struct, \texttt{EquationVariables}, was created as a wrapper for the parameters of the equations.
+
+\subsection{Computational Kernel}
+
+The computational kernel consists of the \texttt{compute} function. The parameters of the function are: the predator and prey density grids, the grid of land/water cells and a pointer to a \texttt{EquationVariables} struc. 
+
+Two 2000 * 2000 size global grids are used temporarily to store the value of new predator and prey densities. For each land cell in the density grid the values of the adjacent cells are read, which then are used for the calculation of the new values (along with the equation parameters). On the other side water cells are ignored. After the new density is computed the value is stored into the temporary density grid. Once all new densities are computed, the new values are assigned back to the original predator and prey density grids from the temporary grids.
+
+The computation is performed until the time, given by the user, is reached.
+
+%The computational kernel is invoked in the main program $N$ times, where $N$ is specified by the user in command line.
+
+\subsection{Data Input and Output}
+
+The readmap function is used to read in a two dimensional array of integers. The first line specifies the length of the rows and columns, and any subsequent lines specify the values for the array. This is useful to read in files that specify the landscape.
+
+\subsection{Error Handling}
+
+The file \texttt{include/\_errors.h} has the project-specific \emph{errnos}. These can be returned from a function to indicate which error occurred. The caller can then act based on this value, or retrieve and print an error message associated with that errno (\texttt{puma\_strerror}). If the error was caused by the OS, the functions return \texttt{PUMA\_OSERROR}, for which message retrieval is delegated to the function \texttt{strerror}.
+
+Also a simple logging utility was implemented that can write debug and error messages. The debug messages will be enabled when the code is compiled with the -DDEBUG flag.
+
+
+%There is a file \texttt{include/_errors.h} that has project-specific errnos. These can be returned
+%from a function to indicate which error occurred. The caller can then act based on this value, or
+%retrieve and print an error message associated with that errno (\texttt{puma_strerror}). If the error
+%was caused by the OS, the functions return \texttt{PUMA_OSERROR}, for which message retrieval is delegated
+%to the function \texttt{strerror}.
+
+%1. Wrote the Makefile scripts.
+
+%2. Implemented a simple logging utility that can write debug and error messages. The debug messages will be enabled when the code is compiled with the -DDEBUG flag.
+%3. Implemented the output to .ppm file functionality.
+%4. Wrote function to parse user input.
+%5. Wrote perl script to compare C program results with results produce by the Matlab program.
+
+
+\section{Testing}
+
+\subsection{Unit Testing}
+
+%Unit testing is to test the program by testing its individual module or parts. The object of unit testing is to isolate each part of the program and show that the individual parts are correct%\cite{unittest}.
+
+The testing framework CUnit was used for performing unit tests. The basic functionality of the framework was utilized, which provides a non-interactive output to \texttt{stdout}.The basic structure of CUnit is a hierarchy of test registry, suite, and test case, which are initialized before the test, and cleaned up afterwards.
+
+%The test will be run only in Basic interface with non-interactive output to sdout . 
+
+%We do our unit testing with CUnit as unit testing framework. CUnit provide the user a library to build their test structures. 
+%. Those parts must be initialized before the test and clean up registry after the test.
+
+
+\subsubsection{Input and Output Testing}
+
+Input and Output were tested in two different ways. The output was tested manually since it was easy to provide a data file and visually check if the result is the expected one. 
+
+The input was tested using the CUnit framework by reading the identity matrix and checking the resulting matrix in the program. 
+
+%The I/O reading was tested by writing a small amount of synthetic data to a file and then reading that in and verifying that the data is correct. For the data we chose the identity matrix, which is easy to verify.
+
+%3. Implemented the output to .ppm file functionality.
+
+\subsubsection{Computational Kernel Testing}
+
+%TODO: Add final results of unit testing and complaining of delta_t=0.4 >:( 
+
+
+%To verify the kernel code is equivalent to verify function compute. Behaviour analysis and matlab simulation will be done before the kernel testing. According to behaviour analysis or matlab simulation, a set of final results, density of puma and hare, will be provided. We run the function compute in some certain iteration, same as the simulation or the instruction of analysis. And check the value on each grid of map if they are what we expected. For simplicity, we only check the value of density of hares, since the density of puma is dependent of hares. %We use CU_ASSERT_DOUBLE_ EQUAL function in CUnit to verify the solutions. We can set the tolerance is equal to $1.0e-5$. 
+
+
+\subsection{Script Testing}
+
+%TODO: Add explanation of behaviour of result
+
+Wrote perl script to compare C program results with results produce by the Matlab program.
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.75]{images/sage1.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\clearpage
+
+
+
+\section{Deployment and Performance Analysis}
+
+
+
+
+\section{Conclusions}
+
+:O :S :P :D
+
+\begin{thebibliography}{100}
+
+%Hoppensteadt, F., "Predator-prey model", Scholarpedia, 1(10), 1563, (2006)
+
+\bibitem{ref:lotka} Hoppensteadt, F., \emph{Predator-prey model}, Scholarpedia, 1(10), 1563, (2006)
+
+\bibitem{ref:bloggs} F.Bloggs. {\em 1993 Latex Users do it
+in Environments} Int. Journal of Silly Findings. pp 23-29.
+
+%\bibitem{ref:unittest} \emph{http://en.wikipedia.org/wiki/Unit_testing }
+
+\end{thebibliography}
+
+
+\end{document}
+

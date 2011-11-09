@@ -1,9 +1,0 @@
-Data Structures
-
-The map is modelled as a grid of land/water cells and implemented as two-dimensional C array, and the population densities of predators and preys on the land are also modelled in the same way and size. The “Real” type is defined in the macro to represent the value in the density grids with different floating point precision specified in compile time. The struct “EquationVariables” is also defined to wrap the coefficients which is read from the input and used in the equation computation.
-
-Computational Kernel
-
-The computational kernel is implemented in the “compute” function. The arguments of the function include the predator and prey density grids, the grid of land and water cells and a pointer of “EquationVariables” struct which contains the coefficients of the predator-prey model. The “compute” function declares two 2000 * 2000 size grids in global to temporarily store the value of new predator and prey densities. For each land cell in the density grids, the “compute” function reads the values of its adjacent cells, and calculate the new density value based on the equation, the coefficients, the old density of the cell and the adjacent densities. The function does not touch the water cells. After the new density is computed the value is stored into the temporary density grid. Once all new densities are computed, the new values are assigned back to the original predator and prey density grids from the temporary girds.
-
-The computational kernel is invoked in the main program for N times, where N is specified by the user in command line.
