@@ -11,7 +11,7 @@
 #include "CUnit/CUnit.h"
 #include "log.h"
 
-/* Unfortunately CU_FAIL /fails/ to be useful, it doesn't print the message you pass it... */
+/*Return error information */
 #define fail_on_error(expr) \
                         do {\
                             int puma_errno = expr; \
@@ -52,17 +52,13 @@ puma_open(const char *filename, const char *mode, FILE **file)
     return PUMA_NOERR;
 }
 
-/* The suite initialization function.
- * Opens the temporary file used by the tests.
- * Returns zero on success, non-zero otherwise.
- */
+
 int init_suite1(void)
 {
     return 0;
 }
 
 /* The suite cleanup function.
- * Closes the temporary file used by the tests.
  * Returns zero on success, non-zero otherwise.
  */
 int clean_suite1(void)
@@ -71,11 +67,7 @@ int clean_suite1(void)
 }
 
 
-/* Simple test of fread().
- * Reads the data previously written by testFPRINTF()
- * and checks whether the expected characters are present.
- * Must be run after testFPRINTF().
- */
+/*Test input readmap function*/
 void test_readmap(void)
 {
     int nx, ny;
@@ -94,11 +86,11 @@ void test_readmap(void)
         }
     }
 
-    //memset(map, 0, sizeof(map));
+   
 
 }
 
-
+/*Test kernal code- compute function*/
 void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     int nx, ny;
     int i, j;
@@ -181,10 +173,8 @@ void test_kernel(void)
     printf("...");
     
 }
-/* The main() function for setting up and running the tests.
- * Returns a CUE_SUCCESS on successful running, another
- * CUnit error code on failure.
- */
+
+
 
 
 int main()
@@ -203,7 +193,6 @@ int main()
    }
 
    /* add the tests to the suite */
-   /* NOTE - ORDER IS IMPORTANT - MUST TEST fread() AFTER fprintf() */
    if (!CU_add_test(pSuite, "test of function readmap in I/O", test_readmap) ||
        !CU_add_test(pSuite, "test of kernel code", test_kernel))
    {
