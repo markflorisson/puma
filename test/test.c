@@ -105,7 +105,7 @@ void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     int value_m; 
     float value_p, value_h, value_s;
     float time_interval = 0.0;
-	float delta_t = 0.0;
+    float delta_t = 0.0;
     double max_iter=1.0;
     
     FILE *file_solution, *file_hares, *file_puma, *file_map;
@@ -147,7 +147,7 @@ void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
         }
     }
     
-    delta_t = (*eqn_obj).time_interval;
+    delta_t = (*eqn_obj).delta_t;
     printf("...",test_case);
 
     for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
@@ -167,7 +167,7 @@ void test_kernel(void)
 
     EquationVariables eqn_obj;
     
-    eqn_obj.time_interval= 0.004;
+    eqn_obj.delta_t= 0.004;
     eqn_obj.prey_pop_inc_rate = 0.08;
     eqn_obj.pred_rate_coeff = 0.04;
     eqn_obj.rep_rate_pred = 0.02;
