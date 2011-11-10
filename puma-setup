@@ -5,5 +5,6 @@ export PROJ_INCLUDE=$PROJ_HOME/include
 export PROJ_BIN=$PROJ_HOME/bin
 export PROJ_LOG=$PROJ_HOME/log
 export PROJ_TEST=$PROJ_HOME/test
+export PROJ_DOCS=$PROJ_HOME/docs
 
 export PATH=$PATH:$PROJ_BIN

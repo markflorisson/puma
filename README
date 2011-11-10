@@ -1,7 +1,30 @@
-Predators and preys
--------------------
-
 Program to simulate predator(Puma) & prey(Hare)
+----------------------------------------------
 
 * Please source puma-setup to setup the environment for compilation
 	e.g.: source ./puma-setup
+
+* All header files are present in the include directory.
+* The main source code is present in the src directory.
+* The detailed documentation for the project is available in docs.
+* 
+
+
+Compilation:
+------------
+The Makefiles are setup to compile the sub-directories recursively.
+
+Dependencies with CUnit library:
+-------------------------------
+If CUnit is installed locally, please ensure that the CFLAGS and LD_LIBRARY_PATH
+environment variables are set accordingly.
+
+PPM output
+----------
+The .ppm files for a given timestep size is output to the directory where the binary is
+executed from.
+
+Convert to GIF
+--------------
+Use ``make simulation`` to produce a .gif animation of the .ppm file from the puma directory.
+Please ensure the .ppm files are present in the puma directory.
