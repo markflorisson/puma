@@ -5,7 +5,7 @@
 #include <time.h>
 
 static char*
-getTimeStamp(char *time_stamp)
+get_time_stamp(char *time_stamp)
 {
 	time_t current_time;
 
@@ -24,7 +24,7 @@ debug_msg(const char* msg, ...)
 	char time_stamp[16] = {'\0'};
 	char line[4096] = {'\0'};
 
-	getTimeStamp(time_stamp);
+	get_time_stamp(time_stamp);
 
 	va_start(list,msg);
 #ifdef DEBUG
@@ -41,7 +41,7 @@ error_msg(const char* msg, ...)
 	char time_stamp[16] = {'\0'};
 	char line[4096] = {'\0'};
 
-	getTimeStamp(time_stamp);
+	get_time_stamp(time_stamp);
 
 	va_start(list,msg);
 

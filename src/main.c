@@ -1,3 +1,17 @@
+/*
+ This program simulates the behaviour of Pumas and Hares
+ using random initial densities for each one. The input
+ file to the program contains the landscape information.
+
+ Authors:
+	Mark Florisson
+	Dante Gama Dessavre
+	Nikilesh Balakrishnan
+	Shun Liang
+	Sinan Shi
+	He Li
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -72,6 +86,9 @@ main(int argc, char *argv[])
 	return 0;
 }
 
+/* 
+ Prints the usage infromation 
+*/
 void
 print_usage(char *argv[])
 {
