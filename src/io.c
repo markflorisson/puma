@@ -40,7 +40,7 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 		return fscanf_error(file, result);
 
 	/* Validate the axes */
-	if (nx < 0 || ny < 0 || nx > NX - 2 || ny > NY - 2)
+	if (nx <= 0 || ny <= 0 || nx > NX - 2 || ny > NY - 2)
 		return PUMA_ERROR_OOB;
 
 	/* Scan in all element of the array */
