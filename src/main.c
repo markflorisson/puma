@@ -24,7 +24,8 @@
 
 extern float random_uniform(float max_val);
 extern void rinit(int ijkl);
-static void parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename);
+static int parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename,
+    int max_iter);
 
 int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
 REAL hare[NX][NY] = {{0}}, puma[NX][NY] = {{0}}; /* Matrices of hare and puma densities */
@@ -44,7 +45,16 @@ main(int argc, char *argv[])
 	
 	EquationVariables eqn_obj = { 0 };
 
-	parse_command_line(argc, argv, &eqn_obj, &time_step_size, filename);
+	/*
+		TODO: check if values are within certain boundaries,
+		For eg delta T cannot be 1 million.
+	 */
+    /* Parse command line inputs. Check coefficients are not negative, and delta_t is not larger than 1 */ 
+	if (puma_errno = parse_command_line(argc, argv, &eqn_obj, &time_step_size, filename, max_iter))
+    {
+		error_msg("[%s:%d]: Error reading command line input: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
+        	exit(EXIT_FAILURE);
+    }
 
 	if ((puma_errno = readmap(filename, map, &nx, &ny)))
 	{
@@ -104,8 +114,8 @@ print_usage(char *argv[])
 	fprintf(stdout,"               -t : Timestep size\n");
 }
 
-void
-parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename)
+int
+parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename, int max_iter)
 {
 	char ch = '\0';
 
@@ -131,30 +141,44 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 
 			case 'r':
 				eqn_obj->prey_pop_inc_rate = atof(optarg);
+                if (eqn_obj->prey_pop_inc_rate < 0)
+                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'a':
 				eqn_obj->pred_rate_coeff = atof(optarg);
+                if (eqn_obj->pred_rate_coeff < 0)
+                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'b':
 				eqn_obj->rep_rate_pred = atof(optarg);
+                if (eqn_obj->rep_rate_pred < 0)
+                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'm':
 				eqn_obj->pred_mort_rate = atof(optarg);
+                if (eqn_obj->pred_mort_rate < 0)
+                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'k':
 				eqn_obj->diff_rate_hares = atof(optarg);
+                if (eqn_obj->diff_rate_hares < 0)
+                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'l':
 				eqn_obj->diff_rate_pumas = atof(optarg);
+                if (eqn_obj->diff_rate_pumas < 0)
+                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'd':
 				eqn_obj->delta_t = atof(optarg);
+                if (eqn_obj->delta_t < 0 || eqn_obj->delta_t > 1)
+                    return PUMA_ERROR_BAD_CMD_ARG_DEL_T;
 				break;
 
 			case 'f':
@@ -163,6 +187,8 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 
 			case 't':
 				*time_step_size = atoi(optarg);
+                if (*time_step_size <= 0 || *time_step_size > max_iter)
+                    return PUMA_ERROR_BAD_CMD_ARG_WO_IN;
 				break;
 
 			default:
@@ -177,5 +203,6 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 		error_msg("[%s:%d]: Usage: puma -f file.dat\n",__FILE__,__LINE__);
 		exit(1);
 	}
+    return 0;
 
 }
