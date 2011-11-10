@@ -1,14 +1,15 @@
 #include <puma.h>
 
 /* Intermediate  matrices used in compute function. */
-REAL hare_new[NX][NY] = {{0}}, puma_new[NX][NY] = {{0}};
+//REAL hare_new[NX][NY] = {{0}}, puma_new[NX][NY] = {{0}};
 
 /*
   Function to compute the Hare and Puma densities for each
   time step. The calculation uses a discretized for of the PDEs.
 */
 void
-compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
+compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY],
+        REAL puma_new[NX][NY], REAL hare_new[NX][NY], int nx, int ny,
         EquationVariables *eq_val)
 {
     int n, i, j;
@@ -39,13 +40,5 @@ compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
                     l * (puma[i - 1][j] + puma[i + 1][j] + puma[i][j - 1] + puma[i][j + 1] - n * puma[i][j]));
         }
     }
-
-    /* Copy the new matrices back to the old */
-    memcpy(hare,hare_new,sizeof(hare_new));
-    memcpy(puma,puma_new,sizeof(puma_new));
-
-    /* Reset the memory contents of the new matrices */
-    memset(hare_new,0,sizeof(hare_new));
-    memset(puma_new,0,sizeof(puma_new));
 
 }

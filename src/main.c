@@ -33,6 +33,8 @@ static int parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj
 /* Global datastructures */
 int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
 REAL hare[NX][NY] = {{0}}, puma[NX][NY] = {{0}}; /* Matrices of hare and puma densities */
+/* Intermediate  matrices used in compute function. */
+REAL hare_new[NX][NY] = {{0}}, puma_new[NX][NY] = {{0}};
 
 int
 main(int argc, char *argv[])
@@ -46,6 +48,9 @@ main(int argc, char *argv[])
     int write_interval = 0;
     float time_interval = 0.0;
     float delta_t = 0.0;
+
+    REAL (*hare_p)[NY];
+    REAL (*puma_p)[NY];
 
     EquationVariables eqn_obj = { 0 };
 
@@ -87,14 +92,21 @@ main(int argc, char *argv[])
     delta_t = eqn_obj.delta_t;
     for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
     {
-        ++write_interval;
-        compute(map, puma, hare, nx, ny, &eqn_obj);
+        if (write_interval % 2 == 0) {
+            compute(map, puma, hare, puma_new, hare_new, nx, ny, &eqn_obj);
+            puma_p = puma_new;
+            hare_p = hare_new;
+        } else {
+            compute(map, puma_new, hare_new, puma, hare, nx, ny, &eqn_obj);
+            puma_p = puma;
+            hare_p = hare;
+        }
 
         /* Check if we need to write the .ppm file */
-        if( (write_interval % time_step_size) != 0) continue;
+        if( (++write_interval % time_step_size) != 0) continue;
 
         debug_msg("[%s:%d]: Writing ppm for time_interval %f\n",__FILE__,__LINE__,time_interval);
-        if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, write_interval)))
+        if ((puma_errno = write_ppm_file(map, hare_p, puma_p, nx, ny, write_interval)))
         {
             error_msg("[%s:%d]: Error writing ppm file for iter %d: %s\n",
                       __FILE__,__LINE__, 1, puma_strerror(puma_errno));

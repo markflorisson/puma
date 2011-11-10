@@ -24,7 +24,7 @@ char *puma_strerror(int);
 
 /*
   Structure containing the
-  equation variables used 
+  equation variables used
   in the calculations
 */
 typedef struct EquationVariables
@@ -42,8 +42,9 @@ typedef struct EquationVariables
 int readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp);
 int write_ppm_file(int map[NX][NX], REAL hare[NX][NY], REAL puma[NX][NY],
                    const int nx, const int ny, const int write_interval);
-void compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY], int nx, int ny,
-             EquationVariables *eq_val);
+void compute(int map[NX][NY], REAL puma[NX][NY], REAL hare[NX][NY],
+             REAL puma_new[NX][NY], REAL hare_new[NX][NY],
+             int nx, int ny, EquationVariables *eq_val);
 
 #if __STDC_VERSION__ >= 199901L
     #define PUMA_INLINE inline

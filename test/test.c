@@ -41,6 +41,8 @@ int map[NX][NY] = {{0}};
 REAL solution[NX][NY] = {{0}};
 REAL hare[NX][NY] = {{0}};
 REAL puma[NX][NY] = {{0}};
+REAL hare_new[NX][NY] = {{0}};
+REAL puma_new[NX][NY] = {{0}};
 
 static int
 puma_open(const char *filename, const char *mode, FILE **file)
@@ -104,6 +106,8 @@ void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
 
     FILE *file_solution, *file_hares, *file_puma, *file_map;
 
+    REAL (*hare_p)[NY];
+
     switch(test_case){
         case 1:
             fail_on_error(puma_open("test/solution.dat", "r", &file_solution));
@@ -142,14 +146,22 @@ void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     }
 
     delta_t = (*eqn_obj).delta_t;
-    printf("...",test_case);
+    printf("... %d ...",test_case);
 
-    for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
-       compute(map, puma, hare, nx, ny, &(*eqn_obj));
+    i = 0;
+    for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t) {
+        if (i++ % 2 == 0) {
+            compute(map, puma, hare, puma_new, hare_new, nx, ny, eqn_obj);
+            hare_p = hare_new;
+        } else {
+            compute(map, puma_new, hare_new, puma, hare, nx, ny, eqn_obj);
+            hare_p = hare;
+        }
+    }
 
     for(i = 1; i <= nx; i++){
         for(j = 1; j <= ny; j++) {
-            PUMA_ASSERT_DOUBLE_EQUAL(solution[i][j], hare[i][j]);
+            PUMA_ASSERT_DOUBLE_EQUAL(solution[i][j], hare_p[i][j]);
         }
     }
 }
