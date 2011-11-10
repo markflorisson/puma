@@ -46,6 +46,24 @@ sub compareArrays
 	print scalar (@$arrayCRef)."\n";
 	print scalar (@$arrayMRef)."\n";
 
+	die "Number of rows not equal" if( (scalar(@$arrayCRef)) != (scalar(@$arrayMRef)) );
+
+	for(my $i=0;$i<(scalar(@$arrayCRef));$i++)
+	{
+		my $columnsC = $arrayCRef->[$i];
+		my $columnsM = $arrayMRef->[$i];
+
+		die "Number of columns not equal" if( scalar(@$columnsC) != scalar(@$columnsM) );
+
+		for(my $j=0;$j<scalar(@$columnsC);$j++)
+		{
+			if($columnsC->[$j] != $columnsM->[$j])
+			{
+				print "Mismatch in values\n";
+			}
+		}	
+	}
+
 }
 
 
