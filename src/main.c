@@ -133,7 +133,7 @@ print_usage(char *argv[])
     fprintf(stdout,"               -k : diffusion rate of hares\n");
     fprintf(stdout,"               -l : diffusion rate of predators\n");
     fprintf(stdout,"               -d : Delta T\n");
-    fprintf(stdout,"               -t : Timestep size\n");
+    fprintf(stdout,"               -t : PPM print timestep size\n");
 }
 
 /*
