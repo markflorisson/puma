@@ -48,8 +48,11 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 			int value = 0;
 
 			if ((result = fscanf(file, "%d", &value)) != 1)
-				return fscanf_error(file, result);
+			    return fscanf_error(file, result);
 
+                        /* Map cells have to be 0 or 1 */
+			if (value != 0 && value != 1)
+			    return PUMA_ERROR_INVALID_DATA;
 			map[i][j] = value;
 		}
 	}
