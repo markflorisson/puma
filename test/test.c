@@ -90,7 +90,7 @@ void test_readmap(void)
 
 }
 
-
+/*Test kernal code- compute function*/
 void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     int nx, ny;
     int i, j;
