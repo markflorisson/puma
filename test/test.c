@@ -26,7 +26,7 @@
         if (a != b) {\
             CU_ASSERT_EQUAL(a, b);\
             fprintf(stderr, "\n    !!! val1=%d val2=%d", a, b);\
-			return;\
+            return;\
         }\
     } while (0)
 
@@ -35,7 +35,7 @@
     CU_FAIL(#a " " #b);\
     return;\
 }
-     
+
 
 int map[NX][NY] = {{0}};
 REAL solution[NX][NY] = {{0}};
@@ -79,6 +79,8 @@ void test_readmap(void)
 
     for(i = 1; i <= nx; i++) {
         for(j = 1; j <= ny; j++) {
+            if (i == j && map[i][j] != 1)
+                printf("%d %d\n", i, j);
             if (i == j)
                 assert_int_equals(map[i][j], 1);
             else
@@ -86,7 +88,7 @@ void test_readmap(void)
         }
     }
 
-   
+
 
 }
 
@@ -94,12 +96,12 @@ void test_readmap(void)
 void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     int nx, ny;
     int i, j;
-    int value_m; 
+    int value_m;
     float value_p, value_h, value_s;
     float time_interval = 0.0;
     float delta_t = 0.0;
     double max_iter=1.0;
-    
+
     FILE *file_solution, *file_hares, *file_puma, *file_map;
 
     switch(test_case){
@@ -121,7 +123,7 @@ void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     }
 
     fail_on_error(puma_open("test/Map.dat", "r", &file_map));
-    
+
     assert_int_equals(fscanf(file_map, "%d %d", &ny, &nx), 2);
 
     /* Scan in all element of the array */
@@ -138,7 +140,7 @@ void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
             map[i][j] = value_m;
         }
     }
-    
+
     delta_t = (*eqn_obj).delta_t;
     printf("...",test_case);
 
@@ -158,7 +160,7 @@ void test_kernel(void)
     int i;
 
     EquationVariables eqn_obj;
-    
+
     eqn_obj.delta_t= 0.004;
     eqn_obj.prey_pop_inc_rate = 0.08;
     eqn_obj.pred_rate_coeff = 0.04;
@@ -171,7 +173,7 @@ void test_kernel(void)
         test_kernel_aux(i,&eqn_obj);
     }
     printf("...");
-    
+
 }
 
 

@@ -85,7 +85,7 @@ void rstart(int i, int j, int k, int l)
  *	independent sequence of random numbers.
  *
  *     Very funny. If that statement was worth anything he would have provided
- *     a proof to go with it. spb 12/12/90 
+ *     a proof to go with it. spb 12/12/90
  */
 
 void rinit(int ijkl)

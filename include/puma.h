@@ -29,14 +29,13 @@ char *puma_strerror(int);
 */
 typedef struct EquationVariables
 {
-	float delta_t;
-        float prey_pop_inc_rate;
-        float pred_rate_coeff;
-        float rep_rate_pred;
-        float pred_mort_rate;
-        float diff_rate_hares;
-        float diff_rate_pumas;
-
+    float delta_t;
+    float prey_pop_inc_rate;
+    float pred_rate_coeff;
+    float rep_rate_pred;
+    float pred_mort_rate;
+    float diff_rate_hares;
+    float diff_rate_pumas;
 } EquationVariables;
 
 /* Function prototypes */
