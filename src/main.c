@@ -1,3 +1,17 @@
+/*
+ This program simulates the behaviour of Pumas and Hares
+ using random initial densities for each one. The input
+ file to the program contains the landscape information.
+
+ Authors:
+	Mark Florisson
+	Dante Gama Dessavre
+	Nikilesh Balakrishnan
+	Shun Liang
+	Sinan Shi
+	He Li
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -28,24 +42,20 @@ main(int argc, char *argv[])
 	int write_interval = 0;
 	float time_interval = 0.0;
 	float delta_t = 0.0;
-	
+
 	EquationVariables eqn_obj = { 0 };
 
-	/*
-		TODO: check if values are within certain boundaries,
-		For eg delta T cannot be 1 million.
-	 */
-    /* Parse command line inputs. Check coefficients are not negative, and delta_t is not larger than 1 */ 
+	/* Parse command line inputs. Check coefficients are not negative, and delta_t is not larger than 1 */ 
 	if (puma_errno = parse_command_line(argc, argv, &eqn_obj, &time_step_size, filename, max_iter))
-    {
+	{
 		error_msg("[%s:%d]: Error reading command line input: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
-        	exit(EXIT_FAILURE);
-    }
+		exit(EXIT_FAILURE);
+	}
 
 	if ((puma_errno = readmap(filename, map, &nx, &ny)))
 	{
 		error_msg("[%s:%d]: Error reading file: %s\n",__FILE__,__LINE__,puma_strerror(puma_errno));
-        	exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	debug_msg("[%s:%d]: nx: %d, ny: %d\n",__FILE__,__LINE__,nx,ny);
@@ -70,18 +80,21 @@ main(int argc, char *argv[])
 		compute(map, puma, hare, nx, ny, &eqn_obj);
 
 		if( (write_interval % time_step_size) != 0) continue;
-		
+
 		debug_msg("[%s:%d]: Writing ppm for time_interval %f\n",__FILE__,__LINE__,time_interval);
 		if ((puma_errno = write_ppm_file(map, hare, puma, nx, ny, write_interval)))
 		{
 			error_msg("[%s:%d]: Error writing ppm file for iter %d: %s\n",__FILE__,__LINE__,1,puma_strerror(puma_errno));
-            		exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 	}
 
 	return 0;
 }
 
+/* 
+ Prints the usage infromation 
+*/
 void
 print_usage(char *argv[])
 {
@@ -124,44 +137,44 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 
 			case 'r':
 				eqn_obj->prey_pop_inc_rate = atof(optarg);
-                if (eqn_obj->prey_pop_inc_rate < 0)
-                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
+				if (eqn_obj->prey_pop_inc_rate < 0)
+					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'a':
 				eqn_obj->pred_rate_coeff = atof(optarg);
-                if (eqn_obj->pred_rate_coeff < 0)
-                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
+				if (eqn_obj->pred_rate_coeff < 0)
+					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'b':
 				eqn_obj->rep_rate_pred = atof(optarg);
-                if (eqn_obj->rep_rate_pred < 0)
-                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
+				if (eqn_obj->rep_rate_pred < 0)
+					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'm':
 				eqn_obj->pred_mort_rate = atof(optarg);
-                if (eqn_obj->pred_mort_rate < 0)
-                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
+				if (eqn_obj->pred_mort_rate < 0)
+					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'k':
 				eqn_obj->diff_rate_hares = atof(optarg);
-                if (eqn_obj->diff_rate_hares < 0)
-                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
+				if (eqn_obj->diff_rate_hares < 0)
+					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'l':
 				eqn_obj->diff_rate_pumas = atof(optarg);
-                if (eqn_obj->diff_rate_pumas < 0)
-                    return PUMA_ERROR_BAD_CMD_ARG_NEG;
+				if (eqn_obj->diff_rate_pumas < 0)
+					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'd':
 				eqn_obj->delta_t = atof(optarg);
-                if (eqn_obj->delta_t < 0 || eqn_obj->delta_t > 1)
-                    return PUMA_ERROR_BAD_CMD_ARG_DEL_T;
+				if (eqn_obj->delta_t < 0 || eqn_obj->delta_t > 1)
+					return PUMA_ERROR_BAD_CMD_ARG_DEL_T;
 				break;
 
 			case 'f':
@@ -170,8 +183,8 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 
 			case 't':
 				*time_step_size = atoi(optarg);
-                if (*time_step_size <= 0 || *time_step_size > max_iter)
-                    return PUMA_ERROR_BAD_CMD_ARG_WO_IN;
+				if (*time_step_size <= 0 || *time_step_size > max_iter)
+					return PUMA_ERROR_BAD_CMD_ARG_WO_IN;
 				break;
 
 			default:
