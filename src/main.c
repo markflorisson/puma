@@ -1,7 +1,8 @@
 /*
  This program simulates the behaviour of Pumas and Hares
  using random initial densities for each one. The input
- file to the program contains the landscape information.
+ file passed to the program contains the land and water
+ bitmask information.
 
  Authors:
 	Mark Florisson
@@ -22,11 +23,13 @@
 #include "log.h"
 #include "puma.h"
 
+/* Function prototypes */
 extern float random_uniform(float max_val);
 extern void rinit(int ijkl);
-static int parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename,
-    int max_iter);
+static int parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename, int max_iter);
 
+
+/* Global datastructures */
 int map[NX][NY] = {{0}}; /* Matrix with land and water bitmask */
 REAL hare[NX][NY] = {{0}}, puma[NX][NY] = {{0}}; /* Matrices of hare and puma densities */
 
@@ -60,6 +63,7 @@ main(int argc, char *argv[])
 
 	debug_msg("[%s:%d]: nx: %d, ny: %d\n",__FILE__,__LINE__,nx,ny);
 
+	/* Initialize the random number generator */
 	rinit(time(NULL)/2);
 
 	/* Init with random values for the densities of hare and puma within 0 and 5 */
@@ -73,12 +77,17 @@ main(int argc, char *argv[])
 		}
 	}
 
+	/* 
+	   Call the computational kernel upto the
+	   maximum iterations in steps of delta_t	
+	*/
 	delta_t = eqn_obj.delta_t;
 	for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
 	{
 		++write_interval;
 		compute(map, puma, hare, nx, ny, &eqn_obj);
 
+		/* Check if we need to write the .ppm file */
 		if( (write_interval % time_step_size) != 0) continue;
 
 		debug_msg("[%s:%d]: Writing ppm for time_interval %f\n",__FILE__,__LINE__,time_interval);
@@ -93,7 +102,7 @@ main(int argc, char *argv[])
 }
 
 /* 
- Prints the usage infromation 
+ Prints the binary usage infromation 
 */
 void
 print_usage(char *argv[])
@@ -110,6 +119,11 @@ print_usage(char *argv[])
 	fprintf(stdout,"               -t : Timestep size\n");
 }
 
+/*
+ This function parses the command-line
+ arguments passed to the program and sets
+ the values of the equation variables  
+*/
 int
 parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time_step_size, char *filename, int max_iter)
 {
@@ -197,8 +211,8 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 	{
 		error_msg("[%s:%d]: ERROR!! Missing mandatory input file field\n",__FILE__,__LINE__);
 		error_msg("[%s:%d]: Usage: puma -f file.dat\n",__FILE__,__LINE__);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
-    return 0;
+    	return 0;
 
 }

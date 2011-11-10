@@ -24,6 +24,10 @@ fscanf_error(FILE *file, int retval)
     return PUMA_ERROR_INVALID_DATA;
 }
 
+/*
+  Function to read a file with 
+  the land water bitmask.
+*/
 int
 readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 {
@@ -72,13 +76,19 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 	return PUMA_NOERR;
 }
 
+/*
+  Function to write the RGB values for a row of
+  cells in the matrix. The function prints the same 
+  RGB row values scale_factor number of times. This is
+  done in order to ensure that for small matrices, the
+  picture scales up.
+*/
 int
 write_pixel_row(FILE *file, int *pixel_row, const int PIXBUFSIZE, const int scale_factor)
 {
 	int i = 0;
 	int j = 0;
 
-	/* copy the pixel rows XPIXELS number of times */
 	for(j = 0; j < XPIXELS * scale_factor; j++)
 	{
 		for(i = 0; i < PIXBUFSIZE; i++)
@@ -93,6 +103,10 @@ write_pixel_row(FILE *file, int *pixel_row, const int PIXBUFSIZE, const int scal
 	return PUMA_NOERR;
 }
 
+/*
+  Copy the pixel values of a cell
+  scale_factor number of times
+*/
 void
 copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter, const int scale_factor)
 {
@@ -110,6 +124,10 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter, const int scale_f
 	*pixel_counter = j;
 }
 
+/*
+  Function to print matrix passed.
+  Used for debugging purposes.
+*/
 void writeMatrix(REAL matrix[NX][NY], const char* filename, const int iter, const int nx, const int ny)
 {
 	char name[FILE_NAME_SIZE] = {'\0'};
@@ -130,6 +148,11 @@ void writeMatrix(REAL matrix[NX][NY], const char* filename, const int iter, cons
 	fclose(file);
 }
 
+/*
+  Function to print a .ppm file for a given time interval.
+  The RGB values in a pixel of the cell is set proportional
+  to the respective densities in the cell.  
+*/
 int
 write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int nx, const int ny, const int write_interval)
 {
@@ -208,6 +231,7 @@ write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int 
 		}
 		pixel_counter = 0;
 
+		/* Write the RGB values for all cells in the row */
 		ret = write_pixel_row(file, pixel_buffer, PIXBUFSIZE, scale_factor);
 		if (ret != PUMA_NOERR) goto errexit;
 

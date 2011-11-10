@@ -22,6 +22,11 @@ enum puma_errors {
 
 char *puma_strerror(int);
 
+/*
+  Structure containing the
+  equation variables used 
+  in the calculations
+*/
 typedef struct EquationVariables
 {
 	float delta_t;
@@ -34,6 +39,7 @@ typedef struct EquationVariables
 
 } EquationVariables;
 
+/* Function prototypes */
 int readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp);
 int write_ppm_file(int map[NX][NX], REAL hare[NX][NY], REAL puma[NX][NY],
                    const int nx, const int ny, const int write_interval);

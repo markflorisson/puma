@@ -4,6 +4,11 @@
 #include <stdarg.h>
 #include <time.h>
 
+
+/* 
+  Function that returns the current
+  timestamp in string format.
+*/
 static char*
 get_time_stamp(char *time_stamp)
 {
@@ -15,8 +20,10 @@ get_time_stamp(char *time_stamp)
 	return time_stamp;
 }
 
-
-
+/*
+  Function to print the debug
+  messages to standard output.
+*/
 static void
 debug_msg(const char* msg, ...)
 {
@@ -34,6 +41,10 @@ debug_msg(const char* msg, ...)
 	va_end(list);
 }
 
+/*
+  Function to print the error
+  messages to standard output.
+*/
 static void
 error_msg(const char* msg, ...)
 {
