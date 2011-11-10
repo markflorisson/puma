@@ -137,37 +137,37 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 
 			case 'r':
 				eqn_obj->prey_pop_inc_rate = atof(optarg);
-				if (eqn_obj->prey_pop_inc_rate < 0)
+				if (eqn_obj->prey_pop_inc_rate <= 0)
 					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'a':
 				eqn_obj->pred_rate_coeff = atof(optarg);
-				if (eqn_obj->pred_rate_coeff < 0)
+				if (eqn_obj->pred_rate_coeff <= 0)
 					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'b':
 				eqn_obj->rep_rate_pred = atof(optarg);
-				if (eqn_obj->rep_rate_pred < 0)
+				if (eqn_obj->rep_rate_pred <= 0)
 					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'm':
 				eqn_obj->pred_mort_rate = atof(optarg);
-				if (eqn_obj->pred_mort_rate < 0)
+				if (eqn_obj->pred_mort_rate <= 0)
 					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'k':
 				eqn_obj->diff_rate_hares = atof(optarg);
-				if (eqn_obj->diff_rate_hares < 0)
+				if (eqn_obj->diff_rate_hares <= 0)
 					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
 			case 'l':
 				eqn_obj->diff_rate_pumas = atof(optarg);
-				if (eqn_obj->diff_rate_pumas < 0)
+				if (eqn_obj->diff_rate_pumas <= 0)
 					return PUMA_ERROR_BAD_CMD_ARG_NEG;
 				break;
 
