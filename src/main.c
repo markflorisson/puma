@@ -213,6 +213,18 @@ parse_command_line(int argc, char *argv[], EquationVariables *eqn_obj, int *time
 		error_msg("[%s:%d]: Usage: puma -f file.dat\n",__FILE__,__LINE__);
 		exit(EXIT_FAILURE);
 	}
+
+	debug_msg("[%s:%d]: Equation coefficients values\n",__FILE__,__LINE__);
+	debug_msg("[%s:%d]: PPM print time step size: %d\n",__FILE__,__LINE__,*time_step_size);
+	debug_msg("[%s:%d]: Delta T: %f\n",__FILE__,__LINE__,eqn_obj->delta_t);
+	debug_msg("[%s:%d]: Prey population increase rate: %f\n",__FILE__,__LINE__,eqn_obj->prey_pop_inc_rate);
+	debug_msg("[%s:%d]: Predator rate coefficient: %f\n",__FILE__,__LINE__,eqn_obj->pred_rate_coeff);
+	debug_msg("[%s:%d]: Predator reproduction rate: %f\n",__FILE__,__LINE__,eqn_obj->rep_rate_pred);
+	debug_msg("[%s:%d]: Predator mortality rate: %f\n",__FILE__,__LINE__,eqn_obj->pred_mort_rate);
+	debug_msg("[%s:%d]: Diffusion rate of Hares: %f\n",__FILE__,__LINE__,eqn_obj->diff_rate_hares);
+	debug_msg("[%s:%d]: Diffusion rate of Pumas: %f\n",__FILE__,__LINE__,eqn_obj->diff_rate_pumas);
+	debug_msg("[%s:%d]: Land water bitmask file: %s\n",__FILE__,__LINE__,filename);
+	
     	return 0;
 
 }
