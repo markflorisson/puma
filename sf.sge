@@ -1,0 +1,57 @@
+#! /bin/bash                                                                      
+#$ -V                                          
+#$ -cwd                                                                        
+
+export file=("perf/50x50.dat" "perf/200x200.dat"
+             "perf/500x500.dat" "perf/700x700.dat" "perf/1000x1000.dat"
+             "perf/1500x1500.dat" "perf/2000x2000.dat")
+
+#export file=("perf/All0.dat" "perf/SmallIsland.dat"   
+#              "perf/BigIsland.dat" "perf/All1.dat")      
+
+
+echo "double"
+#for i in 0 1 2 3
+for i in 0 1 2 3 4 5 6
+do
+echo "=================================="
+echo File: ${file[$i]}
+export time1=$(date +%s.%N)
+echo "----------------------------------"
+./ON -f ${file[$i]}
+export time2=$(date +%s.%N)
+#echo No flags:    $(($time2 - $time1))
+echo No flags: $(echo "$time2 - $time1" | bc)
+
+
+
+export time3=$(date +%s.%N)
+./O1 -f ${file[$i]}
+export time4=$(date +%s.%N)
+#echo -O1:  $(($time4 - $time3))
+echo -O1: $(echo "$time4 - $time3" | bc)
+
+
+export time5=$(date +%s.%N)
+./O2 -f ${file[$i]}
+export time6=$(date +%s.%N)
+#echo -O2: $(($time6 - $time5))
+echo -O2: $(echo "$time6 - $time5" | bc)
+
+export time7=$(date +%s.%N)
+./O3 -f ${file[$i]}
+export time8=$(date +%s.%N)
+#echo -O3: $(($time8 - $time7))
+echo -O3: $(echo "$time8 - $time7" | bc)
+
+
+export time9=$(date +%s.%N)
+export time11=$(date +%s)
+./OMF -f ${file[$i]}
+export time10=$(date +%s.%N)
+export time12=$(date +%s)
+#echo -O3 -msse2 -ftree-vectorize: $(($time12 - $time11))
+echo -O3 -msse2 -ftree-vectorize: $(echo "$time10 - $time9" | bc)
+done
+
+
