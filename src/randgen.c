@@ -1,4 +1,9 @@
 /*
+ *      NOTE: The following code has been copied and 
+ *	modified from the percolate tar ball that was
+ *	handed out to the students for the programming
+ *	skills excercises.
+ *
  *	C version of Marsaglia's UNI random number generator
  *	More or less transliterated from the Fortran -- with 1 bug fix
  *	Hence horrible style
