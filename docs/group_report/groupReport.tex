@@ -32,7 +32,7 @@
 
 \section{Introduction}
 
-The object of this coursework is to implement a sequential version of a two-dimensional predator-prey model with spatial diffusion. The governing equations for this problem are:
+The objective of this coursework is to implement a sequential version of a two-dimensional predator-prey model with spatial diffusion. The governing equations for this problem are:
 
 \begin{equation}
 \frac{\partial H}{\partial t}=rH-aHP+k\left(\frac{\partial^2 H}{\partial^2 x}+\frac{\partial^2 H}{\partial^2 y}\right)\\
@@ -42,7 +42,7 @@ The object of this coursework is to implement a sequential version of a two-dime
 \frac{\partial P}{\partial t}=bHP-mP+l\left(\frac{\partial^2 P}{\partial^2 x}+\frac{\partial^2 P}{\partial^2 y}\right)\\
 \end{equation}
 
-where $H$ is the density of hares (prey) and $P$ the density of pumas (predators). $r$ is the intrinsic rate of prey population increase, $a$ the predation rate coefficient, $b$ the reproduction rate of predators per one prey eaten and m the predator mortality rate. $k$ and $l$ are the diffusion rates for the two species.
+where $H$ is the density of hares (prey) and $P$ the density of pumas (predators). $r$ is the intrinsic rate of prey population increase, $a$ is the predation rate coefficient, $b$ is the reproduction rate of predators per one prey eaten and m is the predator mortality rate. $k$ and $l$ are the diffusion rates for the two species.
 
 Even though this is not a simple problem to analyze from a theoretical perspective, a lot can be learned from a simplification of it. If we assume that both initial densities of hares and pumas are uniform, then the diffusion term in equations (1) and (2) has no effect, so the problem is reduced to:
 
@@ -54,7 +54,7 @@ Even though this is not a simple problem to analyze from a theoretical perspecti
 \frac{\partial P}{\partial t}=bHP-mP
 \end{equation}
 
-This are the Lotka-Volterra equations for prey-predator systems. After doing some mathematical analysis using the parameters provided in the handout, there are two stable points. The first is (0,0) which is a saddle point attracting vectors in the y axis and repelling them in the x axis. The second is (3,2) which is a neutrally stable point, which means that cycles are formed around this point with a counter clockwise direction. The vector field and a sample cycle is shown in Figure 1. All this analysis proved useful during testing of the code.  %The vector field characterizing the solutions to equations (3) and (4) using the parameters given in the coursework handout can be seen in Figure 1. 
+Equations above are the Lotka-Volterra equations for prey-predator systems. After doing some mathematical analysis using the parameters provided in the handout, there are two stable points. The first is (0,0) which is a saddle point attracting vectors in the y axis and repelling them in the x axis. The second is (3,2) which is a neutrally stable point, which means that cycles are formed around this point with a counter clockwise direction. The vector field and a sample cycle is shown in Figure 1. All this analysis has been proved to be useful during testing of the code.  %The vector field characterizing the solutions to equations (3) and (4) using the parameters given in the coursework handout can be seen in Figure 1. 
 
 %\begin{figure}[hb]
 %    \centering
@@ -75,11 +75,11 @@ This are the Lotka-Volterra equations for prey-predator systems. After doing som
 
 \section{Planning and Task Division}
 
-The Systems Modeling Language standard was utilized for designing the software, since it is a modification of UML that can be much better adapted to a non object oriented software. 
+The Systems Modeling Language standard was utilized for designing the software, since it is a modification of UML that can be much better adapted for a non object oriented software. 
 
 The block diagram of the system can be seen in Figure 2. There are four main blocks or components: an input/output (I/O) library, the partial differential equation (PDE) computation kernel, the main simulator and a unit testing component.
 
-The I/O library (Figure 3) consists of two main elements. Firstly there is the read function which accepts the matrixes that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
+The I/O library (Figure 3) consists of two main elements. Firstly there is the read function which accepts the matrices that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
 
 The PDE component (Figure 4) consists mainly of the compute function that implements the approximation formula for estimating the solution to the partial differential equations that model the problem.
 
@@ -154,13 +154,13 @@ The implementation was made in the C language, with an additional Matlab program
 
 \subsection{Data Structures}
 
-The map was modeled as a grid of land/water cells and implemented as two-dimensional $C$ array. The population densities of predators and preys are modeled in the same way. The \texttt{Real} type defined in a macro represents the value in the density grids, so different floating point precision  can be specified in compile time. 
+The map was modeled as a grid of land/water cells and implemented as two-dimensional C array. The population densities of predators and preys are modeled in the same way. The \texttt{Real} type defined in a macro represents the value in each cell of the density grids, so different floating point precision can be specified in compile time. 
 
 A struct, \texttt{EquationVariables}, was created as a wrapper for the parameters of the equations.
 
 \subsection{Computational Kernel}
 
-The (PDE) computational kernel consists primarily of the \texttt{compute} function. The parameters of the function are: the predator and prey density grids, the grid of land/water cells and a pointer to a \texttt{EquationVariables} struc that contains the parameters of the equations. 
+The (PDE) computational kernel consists primarily of the \texttt{compute} function. The parameters of the function are: the predator and prey density grids, the grid of land/water cells and a pointer to a \texttt{EquationVariables} struct that contains the parameters of the equations. 
 
 Two 2000 * 2000 size global grids are used temporarily to store the value of new predator and prey densities. For each land cell in the density grid the values of the adjacent cells are read, which then are used for the calculation of the new values (along with the equation parameters). On the other side water cells are ignored. After the new density is computed the value is stored into the temporary density grid. Once all new densities are computed, the new values are assigned back to the original predator and prey density grids from the temporary grids.
 
@@ -170,13 +170,13 @@ The computation is performed until the time, given by the user, is reached.
 
 \subsection{Data Input and Output}
 
-The readmap function is used to read in a two dimensional array of integers. The first line specifies the length of the rows and columns, and any subsequent lines specify the values for the array. This is useful to read in files that specify the landscape.
+The readmap function is used to read in a two dimensional array of integers. The first line specifies the length of the columns and rows, and the subsequent lines specify the values for the elements in the array. This is useful to read in files that specify the landscape.
 
 \subsection{Error Handling}
 
 The file \texttt{include/\_errors.h} has the project-specific \emph{errnos}. These can be returned from a function to indicate which error occurred. The caller can then act based on this value, or retrieve and print an error message associated with that errno (\texttt{puma\_strerror}). If the error was caused by the OS, the functions return \texttt{PUMA\_OSERROR}, for which message retrieval is delegated to the function \texttt{strerror}.
 
-Also a simple logging utility was implemented that can write debug and error messages. The debug messages will be enabled when the code is compiled with the -DDEBUG flag.
+Also a simple logging utility was implemented that can write debug and error messages. The displaying of debug messages will be enabled when the code is compiled with the -DDEBUG flag.
 
 
 %There is a file \texttt{include/_errors.h} that has project-specific errnos. These can be returned
@@ -199,7 +199,7 @@ Also a simple logging utility was implemented that can write debug and error mes
 
 %Unit testing is to test the program by testing its individual module or parts. The object of unit testing is to isolate each part of the program and show that the individual parts are correct%\cite{unittest}.
 
-The testing framework CUnit was used for performing unit tests. The basic functionality of the framework was utilized, which provides a non-interactive output to \texttt{stdout}.The basic structure of CUnit is a hierarchy of test registry, suite, and test case, which are initialized before the test, and cleaned up afterwards.
+The testing framework CUnit was used for performing unit tests. The basic functionality of the framework was utilized, which provides a non-interactive output to \texttt{stdout}.The basic structure of CUnit is a hierarchy of test registries, suites, and test cases, which are initialized before the test, and cleaned up afterwards.
 
 %The test will be run only in Basic interface with non-interactive output to sdout . 
 
@@ -221,11 +221,11 @@ The input was tested using the CUnit framework by reading the identity matrix an
 
 %TODO: Add final results of unit testing and complaining of delta_t=0.4 >:( 
 
-For testing the computational kernel two techniques were used. The first one was CUnit, utilizing results from a simple MATLAB program as test cases. There are a couple notable aspects about performing this tests, and after doing the mathematical analysis of the equations, the results started to make sense. 
+For testing the computational kernel two techniques were used. The first one was CUnit, utilizing results from a simple MATLAB program as test cases. There are a couple of notable aspects about performing these tests, and after doing the mathematical analysis of the equations, the results started to make sense. 
 
 First, the results of the MATLAB code were verified thanks to the analysis presented in the introduction of the report.
 
-When time steps of size 0.4 were used, the software never past the the test cases. The results when using that value can be seen in Figure 7. But when the time step was changed to 0.004 (which in principle should produce more accurate results), the test were passed satisfactorily. 
+When the time steps of size 0.4 were used, the software never passed the test cases. The results obtained from using that time step value can be seen in Figure 7. However, when the time step was changed to 0.004 (which in principle should produce more accurate results), the test were passed satisfactorily. 
 
 
 %To verify the kernel code is equivalent to verify function compute. Behaviour analysis and matlab simulation will be done before the kernel testing. According to behaviour analysis or matlab simulation, a set of final results, density of puma and hare, will be provided. We run the function compute in some certain iteration, same as the simulation or the instruction of analysis. And check the value on each grid of map if they are what we expected. For simplicity, we only check the value of density of hares, since the density of puma is dependent of hares. %We use CU_ASSERT_DOUBLE_ EQUAL function in CUnit to verify the solutions. We can set the tolerance is equal to $1.0e-5$. 
@@ -235,13 +235,13 @@ When time steps of size 0.4 were used, the software never past the the test case
 
 %TODO: Add explanation of behaviour of result
 
-In order to verify the behaviour of the results in the program, particularly important given the failed test cases when using 0.4 as step size, a perl script to compare the C program results with results produce by the Matlab program at various time steps of the algorithm. 
+In order to verify the behaviour of the results in the program, particularly for the fact that the test cases failed when using 0.4 as step size, a perl script has been written to compare the C program results with results produced by the Matlab program at various time steps of the algorithm. 
 
-A graph of the results of the MATLAB algorithm can be seen in Figure 7 (once again using uniform starting densities and the handout parameters). Contrary to the results predicted by the analysis, the results diverged, and if a big final time parameter was used, the results wen to infinity (throwing a \texttt{NaN} result). A similar behaviour was observed in the C program.
+A graph of the results of the MATLAB algorithm can be seen in Figure 7 (once again uniform starting densities and the handout parameters were used). Contrary to the results predicted by the analysis, the results diverged, and if a big final time parameter was used, the results went to infinity (a \texttt{NaN} result was thrown). A similar behaviour was observed in the C program.
 
-On the other hand two results of the C program, using time steps of 0.004, can be seen in Figure 8. Here the result was the stable cycle that was expected, and it was the same result for both MATLAB and C codes.
+On the other hand two results of the C program, using time steps of 0.004, can be seen in Figure 8. Here the result was the stable cycle that was expected, and it was the same result for both MATLAB and C code.
 
-Also there was an introduction to this kind of problems in a recent Parallel Numerical Algorithms, that talked about how this algorithms can fail due to the choice of time step. That seems to be the case in this result, the use of time steps of 0.4 produces a divergent result that is due to error in the algorithm and not an actual approximation to the solution. Both the C and MATLAB codes produced wrong results, and the fact that the wrong results they produced were different actually told us nothing about the correctness or the program. It was when using an adequate time step that both programs had a result similar to what we had expected, and since they coincided when dealing with these correct result one can conclude that the program passes the tests that it should once adequate parameters are utilized.
+Also there was an introduction to this kind of problems in a recent lecture of Parallel Numerical Algorithms. It talked about how this algorithms can fail due to the choice of time step. That seems to be the case in this result, the use of time steps of 0.4 produces a divergent result that was due to the errors in the algorithm and not an actual approximation to the solution. Both the C and MATLAB code produced wrong results, and the fact that the wrong results they produced were different actually told us nothing about the correctness or the program. Instead, when using an adequate time step, both programs had a result similar to what we had expected. Since they coincided when dealing with these correct results, one can conclude that the program should pass the tests once adequate parameters are utilized.
 
 \begin{figure}[hb]
     \centering
