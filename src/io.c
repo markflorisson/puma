@@ -8,6 +8,7 @@
 
 #define MAX_SIZE 1000
 #define MAX_COLOR_VAL 50
+#define FILE_NAME_SIZE 128
 
 enum { RED, GREEN, BLUE };
 
@@ -46,15 +47,22 @@ readmap(const char *filename, int map[NX][NY], int *nxp, int *nyp)
 	for (i = 1; i <= nx; i++) {
 		for (j = 1; j <= ny; j++) {
 			int value = 0;
+			char c;
 
 			if ((result = fscanf(file, "%d", &value)) != 1)
-			    return fscanf_error(file, result);
+				return fscanf_error(file, result);
 
-                        /* Map cells have to be 0 or 1 */
+			if (j == ny) {
+				while ((c = fgetc(file)) != '\n');
+				break; 
+			}
+			/* Map cells have to be 0 or 1 */
 			if (value != 0 && value != 1)
-			    return PUMA_ERROR_INVALID_DATA;
+				return PUMA_ERROR_INVALID_DATA;
+
 			map[i][j] = value;
 		}
+
 	}
 	fclose(file);
 
@@ -102,13 +110,13 @@ copy_to_buf(int *pixel_buffer, int *pixel, int *pixel_counter, const int scale_f
 	*pixel_counter = j;
 }
 
-void writeMatrix(REAL matrix[NX][NY], const char* filename, const float iter, const int nx, const int ny)
+void writeMatrix(REAL matrix[NX][NY], const char* filename, const int iter, const int nx, const int ny)
 {
-	char name[128] = {'\0'};
+	char name[FILE_NAME_SIZE] = {'\0'};
 	int i = 0, j = 0;
 	FILE *file = NULL;
 
-	sprintf(name,"%s_%03d.M.dat",filename,(int)iter);
+	snprintf(name, FILE_NAME_SIZE, "%s_%03d.C.dat", filename, iter);
 	file = fopen(name, "w");
 	
 	for(i = 1; i <= nx; i++)
@@ -120,14 +128,13 @@ void writeMatrix(REAL matrix[NX][NY], const char* filename, const float iter, co
 		fprintf(file,"\n");
 	}
 	fclose(file);
-	
 }
 
 int
-write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int nx, const int ny, const float delta_t)
+write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int nx, const int ny, const int write_interval)
 {
 	int i = 0, j = 0;
-	char filename[64] = {'\0'};
+	char filename[FILE_NAME_SIZE] = {'\0'};
 	int pixel[3] = {0};
 	int red_val = 0, green_val = 0;
 	int ret = PUMA_NOERR;
@@ -140,18 +147,19 @@ write_ppm_file(int map[NX][NY], REAL hare[NX][NY], REAL puma[NX][NY], const int 
 	int scale_factor = 0;
 	scale_factor = MAX_SIZE/ny;
 
-	writeMatrix(hare,"hare",delta_t, nx, ny);
-	writeMatrix(puma,"puma",delta_t, nx, ny);
-	//writeMatrix(puma,"map",delta_t);
+	//writeMatrix(hare, "hare", write_interval, nx, ny);
+	//writeMatrix(puma, "puma", write_interval, nx, ny);
+	//writeMatrix(puma,"map",write_interval);
 
 	if(scale_factor <= 0) scale_factor = 1; /* In case the array is bigger than MAX_SIZE */
 
 	PIXBUFSIZE = YPIXELS * scale_factor * ny * 3; /* 3 since each pixel has RGB */
 
-	debug_msg("[%s:%d]: scale_factor: %d\n",__FILE__,__LINE__,scale_factor);
-	debug_msg("[%s:%d]: PIXBUFSIZE: %d\n",__FILE__,__LINE__,PIXBUFSIZE);
+	debug_msg("[%s:%d]: scale_factor: %d\n",__FILE__,__LINE__, scale_factor);
+	debug_msg("[%s:%d]: PIXBUFSIZE: %d\n",__FILE__,__LINE__, PIXBUFSIZE);
+	debug_msg("[%s:%d]: write_interval: %d\n",__FILE__,__LINE__, write_interval);
 
-	sprintf(filename,"pumaHare_%03d.ppm",(int)delta_t);
+	snprintf(filename, FILE_NAME_SIZE, "pumaHare_%03d.ppm", write_interval);
 
 	file = fopen(filename, "w");
 
