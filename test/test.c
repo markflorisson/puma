@@ -99,30 +99,37 @@ void test_readmap(void)
 }
 
 
-void test_kernel(void)
-{
+void test_kernel_aux(int test_case, EquationVariables *eqn_obj){
     int nx, ny;
     int i, j;
     int value_m; 
     float value_p, value_h, value_s;
-    int max_iter=100;
-    EquationVariables eqn_obj;
-
+    float time_interval = 0.0;
+	float delta_t = 0.0;
+    double max_iter=1.0;
+    
     FILE *file_solution, *file_hares, *file_puma, *file_map;
 
-    fail_on_error(puma_open("test/solution.dat", "r", &file_solution));
-    fail_on_error(puma_open("test/Hare.dat", "r", &file_hares));
-    fail_on_error(puma_open("test/Puma.dat", "r", &file_puma));
+    switch(test_case){
+        case 1:
+            fail_on_error(puma_open("test/solution.dat", "r", &file_solution));
+            fail_on_error(puma_open("test/Hare.dat", "r", &file_hares));
+            fail_on_error(puma_open("test/Puma.dat", "r", &file_puma));
+            break;
+        case 2:
+            fail_on_error(puma_open("test/solution2.dat", "r", &file_solution));
+            fail_on_error(puma_open("test/Hare2.dat", "r", &file_hares));
+            fail_on_error(puma_open("test/Puma2.dat", "r", &file_puma));
+            break;
+        case 3:
+            fail_on_error(puma_open("test/solution3.dat", "r", &file_solution));
+            fail_on_error(puma_open("test/Hare3.dat", "r", &file_hares));
+            fail_on_error(puma_open("test/Puma3.dat", "r", &file_puma));
+            break;
+    }
+
     fail_on_error(puma_open("test/Map.dat", "r", &file_map));
-
-    eqn_obj.delta_t = 0.004;
-    eqn_obj.prey_pop_inc_rate = 0.08;
-    eqn_obj.pred_rate_coeff = 0.04;
-    eqn_obj.rep_rate_pred = 0.02;
-    eqn_obj.pred_mort_rate = 0.06;
-    eqn_obj.diff_rate_hares = 0.2;
-    eqn_obj.diff_rate_pumas = 0.2;
-
+    
     assert_int_equals(fscanf(file_map, "%d %d", &ny, &nx), 2);
 
     /* Scan in all element of the array */
@@ -139,19 +146,41 @@ void test_kernel(void)
             map[i][j] = value_m;
         }
     }
+    
+    delta_t = (*eqn_obj).time_interval;
+    printf("...",test_case);
 
-
-    for (i = 0; i < max_iter; i++)
-       compute(map, puma, hare, nx, ny, &eqn_obj);
+    for (time_interval = delta_t; time_interval < max_iter; time_interval += delta_t)
+       compute(map, puma, hare, nx, ny, &(*eqn_obj));
 
     for(i = 1; i <= nx; i++){
         for(j = 1; j <= ny; j++) {
             PUMA_ASSERT_DOUBLE_EQUAL(solution[i][j], hare[i][j]);
         }
     }
-
 }
 
+
+void test_kernel(void)
+{
+    int i;
+
+    EquationVariables eqn_obj;
+    
+    eqn_obj.time_interval= 0.004;
+    eqn_obj.prey_pop_inc_rate = 0.08;
+    eqn_obj.pred_rate_coeff = 0.04;
+    eqn_obj.rep_rate_pred = 0.02;
+    eqn_obj.pred_mort_rate = 0.06;
+    eqn_obj.diff_rate_hares = 0.2;
+    eqn_obj.diff_rate_pumas = 0.2;
+
+    for(i = 1; i < 4; i++){
+        test_kernel_aux(i,&eqn_obj);
+    }
+    printf("...");
+    
+}
 /* The main() function for setting up and running the tests.
  * Returns a CUE_SUCCESS on successful running, another
  * CUnit error code on failure.
