@@ -79,7 +79,7 @@ The Systems Modeling Language standard was utilized for designing the software, 
 
 The block diagram of the system can be seen in Figure 2. There are four main blocks or components: an input/output (I/O) library, the partial differential equation (PDE) computation kernel, the main simulator and a unit testing component.
 
-The I/O library (Figure 3) consists of two main elements. Firstly there is the read function which accepts the matrixes that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
+The I/O library (Figure 3) consists of two main elements. Firstly there is the read function which accepts the matrices that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
 
 The PDE component (Figure 4) consists mainly of the compute function that implements the approximation formula for estimating the solution to the partial differential equations that model the problem.
 
@@ -176,7 +176,7 @@ The readmap function is used to read in a two dimensional array of integers. The
 
 The file \texttt{include/\_errors.h} has the project-specific \emph{errnos}. These can be returned from a function to indicate which error occurred. The caller can then act based on this value, or retrieve and print an error message associated with that errno (\texttt{puma\_strerror}). If the error was caused by the OS, the functions return \texttt{PUMA\_OSERROR}, for which message retrieval is delegated to the function \texttt{strerror}.
 
-Also a simple logging utility was implemented that can write debug and error messages. The debug messages will be enabled when the code is compiled with the -DDEBUG flag.
+Also a simple logging utility was implemented that can write debug and error messages. The debug messages will be enabled when the code is compiled with the \texttt{-DDEBUG} flag.
 
 
 %There is a file \texttt{include/_errors.h} that has project-specific errnos. These can be returned
@@ -288,15 +288,54 @@ For the stress test cases 1 to 8, the program exits outputting a relevant error 
 
 \subsection{Performance testing} 
 
-%The first step of the performance testing was utilizing different compiler optimization flags, which are shown in the next table:
-%
-%\begin{tabular}{ | l || l | }
-%    \hline
-%    gcc optimization flags:  & O1, O2, O3, auto-vectorization \\
-%    \hline
-%    Running environment:  & NESS Back-end \\
-%    \hline
-%\end{tabular}
+
+The first step of the performance testing was utilizing different compiler optimization flags, which are shown in the next table:
+
+\begin{tabular}{ | l || l | }
+    \hline
+    gcc optimization flags:  & \texttt{-O1, -O2, -O3} \\
+    \hline
+    Running environment:  & Quad Core Intel i7 Computer \\
+    \hline
+\end{tabular}
+
+Figure 9 shows the running time of different optimization options and landscape sizes, utilizing single precision. The most notable aspect is the difference between the code compiled with no flags with the one compiled with the \texttt{-O1} flag. The optimizations provided by this level made the performance behaviour with respect to matrix size to be a lot more linear than the unoptimized code (which shows a near exponential growth), which wasn't a result that was expected beforehand. On the other hand, the similar behaviour between the  \texttt{-O1, -O2} and  \texttt{-O3} levels was to be expected given the simplicity of the code, and the fact that the data alignment optimizations provided by the \texttt{-O2} flags don't help much since the data was already nicely aligned to start with.
+
+Figure 10 shows that when double precision was used, there werw no significant difference in either behaviour nor execution times when compared to single precision. What this shows it shows is that the CPU it was executed on was equally capable of double precision floating point operations ad single precision ones and that the compiler optimizations had the same effects in both cases.
+
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/float.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.6]{images/double.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+
+%This is because in the computational kernel, if the current gridpoint is water(value 0), then the code(or program? A better word to repace “code”?) would not do any calculation or upgrade the three 2d arraies(hare, puma and map) as well as we have got that the calculation and upgrading takes the most time by profiling section.
+
+The execution times for different landscape masks can be seen in figure 11. There seems to be a clear correlation between the amount of land (represented by 1's) and the execution time, which is perfectly logical. Nonetheless there was no evidence that the structure of the islands influenced execution time, but more experimentation is needed to determine this (which was not possible to do given the time constraints).
+
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[scale=0.3]{images/bargraph.png}
+    \caption{Vector field of equation 2}
+\end{figure}
+
+
+\subsection{Profiling}
+
+GNU GProf was utilized for profiling the software. The compute function (part of the PDE Kernel) takes the majority of execution time. However, the running time of readmap function rises when increasing matrix size. When the input is a $50\times 50$ matrix, the compute function takes $99.99\%$ percent CPU time for the process. When the input is a $2000\times 2000$  matrix, the percentage of time spent in the compute function was reduced significantly. 
+
+This behaviour was actually expected beforehand, but it still tells us that all the optimization efforts must be used in the compute function and disk access should be avoided as much as possible, since this is (by far) the main source of overhead when landscape size is augmented.
+
+
 %
 %%DoubleFlags
 %
@@ -352,7 +391,7 @@ One unexpected aspect was the particular importance of automated error testing w
 
 The use of performance analysis tools proved very helpful in finding the bottlenecks within the code. A huge performance improvement was achieved by avoiding expensive operations such as copying segments of memory repeatedly in a loop. Use of tools like gdb also was also quite useful in debugging segmentation faults.
 
-By working on this project, every member in the team was able to practically use the various tools and techniques taught as part of the Programming Skills course, given that some of the main stages of development were shared among all the members.
+By working on this project, every member in the team was able to use the various tools and techniques taught as part of the Programming Skills course, given that some of the main stages of development were shared among all the members.
  
 
 
