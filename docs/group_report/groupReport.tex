@@ -32,7 +32,7 @@
 
 \section{Introduction}
 
-The objective of this coursework is to implement a sequential version of a two-dimensional predator-prey model with spatial diffusion. The governing equations for this problem are:
+The objective of this coursework was to implement a sequential version of a two-dimensional predator-prey model with spatial diffusion. The governing equations for this problem are:
 
 \begin{equation}
 \frac{\partial H}{\partial t}=rH-aHP+k\left(\frac{\partial^2 H}{\partial^2 x}+\frac{\partial^2 H}{\partial^2 y}\right)\\
@@ -301,7 +301,7 @@ The first step of the performance testing was utilizing different compiler optim
 
 Figure 9 shows the running time of different optimization options and landscape sizes, utilizing single precision. The most notable aspect is the difference between the code compiled with no flags with the one compiled with the \texttt{-O1} flag. The optimizations provided by this level made the performance behaviour with respect to matrix size to be a lot more linear than the unoptimized code (which shows a near exponential growth), which wasn't a result that was expected beforehand. On the other hand, the similar behaviour between the  \texttt{-O1, -O2} and  \texttt{-O3} levels was to be expected given the simplicity of the code, and the fact that the data alignment optimizations provided by the \texttt{-O2} flags don't help much since the data was already nicely aligned to start with.
 
-Figure 10 shows that when double precision was used, there werw no significant difference in either behaviour nor execution times when compared to single precision. What this shows it shows is that the CPU it was executed on was equally capable of double precision floating point operations ad single precision ones and that the compiler optimizations had the same effects in both cases.
+Figure 10 shows that when double precision was used, there were no significant difference in either the behaviour nor the execution time when comparing to single precision. What this shows is that the code was executed on the CPU which is equally capable of double precision floating point operations and single precision ones and that the compiler optimizations had the same effects in both cases.
 
 
 \begin{figure}[hb]
@@ -319,7 +319,7 @@ Figure 10 shows that when double precision was used, there werw no significant d
 
 %This is because in the computational kernel, if the current gridpoint is water(value 0), then the code(or program? A better word to repace “code”?) would not do any calculation or upgrade the three 2d arraies(hare, puma and map) as well as we have got that the calculation and upgrading takes the most time by profiling section.
 
-The execution times for different landscape masks can be seen in figure 11. There seems to be a clear correlation between the amount of land (represented by 1's) and the execution time, which is perfectly logical. Nonetheless there was no evidence that the structure of the islands influenced execution time, but more experimentation is needed to determine this (which was not possible to do given the time constraints).
+The execution times for different landscape masks can be seen in figure 11. There seems to be a clear correlation between the amount of land (represented by 1s) and the execution time, which is perfectly logical. Nonetheless there was no evidence that the structure of the islands influenced execution time, but more experimentation is needed to determine this (which was not possible to do given the time constraints of the project).
 
 
 \begin{figure}[hb]
@@ -331,7 +331,7 @@ The execution times for different landscape masks can be seen in figure 11. Ther
 
 \subsection{Profiling}
 
-GNU GProf was utilized for profiling the software. The compute function (part of the PDE Kernel) takes the majority of execution time. However, the running time of readmap function rises when increasing matrix size. When the input is a $50\times 50$ matrix, the compute function takes $99.99\%$ percent CPU time for the process. When the input is a $2000\times 2000$  matrix, the percentage of time spent in the compute function was reduced significantly. 
+GNU GProf was utilized for profiling the software. The compute function (part of the PDE Kernel) took the majority of execution time. However, the running time of readmap function rose when increasing matrix size. When the input was a $50\times 50$ matrix, the compute function took $99.99\%$ percent of CPU time for the process. When the input was a $2000\times 2000$ x matrix, the percentage of time spent on the compute function was much less than the time spent for the small matrix. 
 
 This behaviour was actually expected beforehand, but it still tells us that all the optimization efforts must be used in the compute function and disk access should be avoided as much as possible, since this is (by far) the main source of overhead when landscape size is augmented.
 
@@ -383,13 +383,13 @@ This behaviour was actually expected beforehand, but it still tells us that all 
 
 The main objective of this work was to use good software development practices and standards, and see the importance that all stages of the process have, along with producing the best implementation given the time constraints of the project, which was accomplished successfully. 
 
-Working in a team has lots of challenges. Employing good software development processes can improve the quality and efficiency of the project deliverables. We experienced this firsthand while working on this project. By taking a modularized approach to tackle the various tasks in the project, the amount of work was divided as equally as possible. Periodic checkpoints and meetings were essential in order to complete the deliverables on time. The
+Working in a team has lots of challenges. Employing good software development processes can improve the quality and efficiency of the project deliverables. We experienced this firsthand while working on this project. By taking a modularized approach to tackle the various tasks in the project, the amount of work was divided as equally as possible. Periodic checkpoints and meetings were essential in order to complete the deliverables on time. 
 
-Coding standards used in the project ensured easy readability and quick detection of bugs within the code, along with easy integration of different components. Code reviews and running stress tests played an important part in making the program robust. The use of a testing framework made the task of unit testing quick and reliable, and also allowed making improvements and optimizations to the code base without breaking the functionality. Also the use of a good revision control system such as Git made the maintenance of the source code simple. Also automating repetitive tasks in the project using scripts improved the overall productivity of the project.
+The coding standards used in the project ensured easy readability and quick detection of bugs within the code, along with easy integration of different components. Code reviews and running stress tests played an important part in making the program robust. The use of a testing framework made the task of unit testing quick and reliable, and also allowed making improvements and optimizations to the code base without breaking the functionality. Also the use of a good revision control system such as Git made the maintenance of the source code simple. Also automating repetitive tasks in the project using scripts improved the overall productivity of the project.
  
-One unexpected aspect was the particular importance of automated error testing was particularly important since it  allowed us to realize some aspects of the behaviour that would have otherwise been impossible (at least given the time frame and other projects and course works), like the role of the time step in the convergence algorithm.
+One unexpected aspect was the particular importance of automated error testing since it allowed us to realize some aspects of the behaviour that would have otherwise been impossible (at least given the time frame and other projects and course works), like the role of the time step in the convergence algorithm.
 
-The use of performance analysis tools proved very helpful in finding the bottlenecks within the code. A huge performance improvement was achieved by avoiding expensive operations such as copying segments of memory repeatedly in a loop. Use of tools like gdb also was also quite useful in debugging segmentation faults.
+The use of performance analysis tools was proved to be very helpful in finding the bottlenecks within the code. A huge performance improvement was achieved by avoiding expensive operations such as copying segments of memory repeatedly in a loop. Use of tools like gdb was also quite useful in debugging segmentation faults.
 
 By working on this project, every member in the team was able to use the various tools and techniques taught as part of the Programming Skills course, given that some of the main stages of development were shared among all the members.
  
