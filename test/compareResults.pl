@@ -18,7 +18,7 @@ sub main
 {
 	foreach my $iter (@iterList)
 	{
-		next if(0 == ($iter % $interval));
+		next if(0 != ($iter % $interval));
 		
 		foreach my $animal (@animalList)
 		{
@@ -59,7 +59,7 @@ sub compareArrays
 		{
 			if($columnsC->[$j] != $columnsM->[$j])
 			{
-				print "Mismatch in values\n";
+				print "Mismatch in element $i\n";
 			}
 		}	
 	}
