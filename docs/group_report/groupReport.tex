@@ -54,7 +54,7 @@ Even though this is not a simple problem to analyze from a theoretical perspecti
 \frac{\partial P}{\partial t}=bHP-mP
 \end{equation}
 
-These are the Lotka-Volterra equations for prey-predator systems. After doing some mathematical analysis using the parameters provided in the handout, there are two stable points. The first is (0,0) which is a saddle point attracting vectors in the y axis and repelling them in the x axis. The second is (3,2) which is a neutrally stable point, which means that cycles are formed around this point with a counter clockwise direction. The vector field and a sample cycle is shown in Figure 1. All this analysis proved useful during testing of the code.  %The vector field characterizing the solutions to equations (3) and (4) using the parameters given in the coursework handout can be seen in Figure 1. 
+These are the Lotka-Volterra equations for prey-predator systems. After doing some mathematical analysis using the parameters provided in the handout, there are two stable points. The first is (0,0) which is a saddle point attracting vectors in the y axis and repelling them in the x axis. The second is (3,2) which is a neutrally stable point, which means that cycles are formed around this point with a counter clockwise direction. The vector field and a sample cycle is shown in figure 1. All this analysis proved useful during testing of the code.  %The vector field characterizing the solutions to equations (3) and (4) using the parameters given in the coursework handout can be seen in figure 1. 
 
 %\begin{figure}[hb]
 %    \centering
@@ -68,7 +68,7 @@ These are the Lotka-Volterra equations for prey-predator systems. After doing so
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.75]{images/sage2.png}
-    \caption{Vector field of equation 2}
+    \caption{Vector field of equation 2 and example of a solution}
 \end{figure}
 
 
@@ -77,13 +77,13 @@ These are the Lotka-Volterra equations for prey-predator systems. After doing so
 
 The Systems Modeling Language standard was utilized for designing the software, since it is a modification of UML that is more suitable for non object oriented software. 
 
-The block diagram of the system can be seen in Figure 2. There are four main blocks or components: an input/output (I/O) library, the partial differential equation (PDE) computation kernel, the main simulator and a unit testing component.
+The block diagram of the system can be seen in figure 2. There are four main blocks or components: an input/output (I/O) library, the partial differential equation (PDE) computation kernel, the main simulator and a unit testing component.
 
-The I/O library (Figure 3) consists of two main elements. Firstly there is the read function which accepts the matrices that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
+The I/O library (figure 3) consists of two main elements. Firstly there is the read function which accepts the matrices that correspond to the island, hares and pumas. The second one is the write function that handles the creation of the \texttt{ppm} files that contain the output for visualization. It also contains two auxiliary components alongside an error handling element.
 
-The PDE component (Figure 4) consists mainly of the compute function that implements the approximation formula for estimating the solution to the partial differential equations that model the problem.
+The PDE component (figure 4) consists mainly of the compute function that implements the approximation formula for estimating the solution to the partial differential equations that model the problem.
 
-The main component takes care of parsing the user input and printing the usage, but its primary purpose is to utilize the I/O and PDE components in order to solve the problem. The internal block diagram can be seen in Figure 5, which contains a flow diagram of how the main component was designed.
+The main component takes care of parsing the user input and printing the usage, but its primary purpose is to utilize the I/O and PDE components in order to solve the problem. The internal block diagram can be seen in figure 5, which contains a flow diagram of how the main component was designed.
 
 Finally, the figure 6 details the unit testing component, whose main element is similar to the one in the main program's component, but with additional automated testing elements, so it doesn't need to parse the user input.
 
@@ -91,31 +91,31 @@ Finally, the figure 6 details the unit testing component, whose main element is 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/blockdesign.png}
-    \caption{Vector field of equation 2}
+    \caption{System Block Design}
 \end{figure}
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/bd1.png}
-    \caption{Vector field of equation 2}
+    \caption{I/O Internal Block Design}
 \end{figure}
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/bd2.png}
-    \caption{Vector field of equation 2}
+    \caption{PDE Computational Kernel Internal Block Design}
 \end{figure}
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/bd3.png}
-    \caption{Vector field of equation 2}
+    \caption{Prey Predator Simulator Internal Block Design}
 \end{figure}
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/bd4.png}
-    \caption{Vector field of equation 2}
+    \caption{Unit Testing Internal Block Design}
 \end{figure}
 
 \clearpage
@@ -227,7 +227,7 @@ There are a couple notable aspects about performing this tests, and after doing 
 
 First, the results of the MATLAB code were verified thanks to the analysis presented in the introduction of the report.
 
-When time steps of size 0.4 were used, the software never passed the the test cases. The results when using that value can be seen in Figure 7. But when the time step was changed to 0.004 (which in principle should produce more accurate results), the test were passed satisfactorily. 
+When time steps of size 0.4 were used, the software never passed the the test cases. The results when using that value can be seen in figure 7. But when the time step was changed to 0.004 (which in principle should produce more accurate results), the test were passed satisfactorily. 
 
 
 %To verify the kernel code is equivalent to verify function compute, we generate 3 small scale matlab simulation testing cases to check the solution of kernel code. According to matlab simulation, a set of final results, density of puma and hare, will be provided. We run the function compute in some certain iteration, same as the simulation or the instruction of analysis. And check the value on each grid of map if they are what we expected. For simplicity, we only check the value of density of hares, since the density of puma is dependent of hares. We use CU_ASSERT_DOUBLE_ EQUAL function in CUnit to verify the solutions. Since CUnit function will not return the proper error information (just print the error command line). We have made some functions to return the error value and true value as well and, we set tolerance equal to 1.0e-5.
@@ -241,16 +241,16 @@ When time steps of size 0.4 were used, the software never passed the the test ca
 
 In order to verify the behaviour of the results in the program, particularly important given the failed test cases when using 0.4 as step size, a perl script to compare the C program results with results produce by the Matlab program at various time steps of the algorithm. 
 
-A graph of the results of the MATLAB algorithm can be seen in Figure 7 (once again using uniform starting densities and the handout parameters). Contrary to the results predicted by the analysis, the results diverged, and if a big final time parameter was used, the results wen to infinity (throwing a \texttt{NaN} result). A similar behaviour was observed in the C program.
+A graph of the results of the MATLAB algorithm can be seen in figure 7 (once again using uniform starting densities and the handout parameters). Contrary to the results predicted by the analysis, the results diverged, and if a big final time parameter was used, the results wen to infinity (throwing a \texttt{NaN} result). A similar behaviour was observed in the C program.
 
-On the other hand two results of the C program, using time steps of 0.004, can be seen in Figure 8. Here the result was the stable cycle that was expected, and it was the same result for both MATLAB and C code.
+On the other hand two results of the C program, using time steps of 0.004, can be seen in figure 8 (in the figure the Vector Field of the theoretical analysis was also added). Here the result was the stable cycle that was expected, and it was the same result for both MATLAB and C programs.
 
 Also there was an introduction to this kind of problems in a recent lecture Parallel Numerical Algorithms, that talked about how this algorithms can fail due to the choice of time step. That seems to be the case in this result, the use of time steps of 0.4 produces a divergent result that is due to error in the algorithm and not an actual approximation to the solution. Both the C and MATLAB codes produced wrong results, and the fact that the wrong results they produced were different actually told us nothing about the correctness or the program. It was when using an adequate time step that both programs had a result similar to what we had expected, and since they coincided when dealing with these correct result one can conclude that the program passes the tests that it should once adequate parameters are utilized.
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.5]{images/diverge.png}
-    \caption{Vector field of equation 2}
+    \caption{Example of divergent wrong approximation}
 \end{figure}
 
 
@@ -259,7 +259,7 @@ Also there was an introduction to this kind of problems in a recent lecture Para
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.75]{images/sage1.png}
-    \caption{Vector field of equation 2}
+    \caption{Correct approximations}
 \end{figure}
 
 \clearpage
@@ -301,19 +301,19 @@ The first step of the performance testing was utilizing different compiler optim
 
 Figure 9 shows the running time of different optimization options and landscape sizes, utilizing single precision. The most notable aspect is the difference between the code compiled with no flags with the one compiled with the \texttt{-O1} flag. The optimizations provided by this level made the performance behaviour with respect to matrix size to be a lot more linear than the unoptimized code (which shows a near exponential growth), which wasn't a result that was expected beforehand. On the other hand, the similar behaviour between the  \texttt{-O1, -O2} and  \texttt{-O3} levels was to be expected given the simplicity of the code, and the fact that the data alignment optimizations provided by the \texttt{-O2} flags don't help much since the data was already nicely aligned to start with.
 
-Figure 10 shows that when double precision was used, there were no significant difference in either the behaviour nor the execution time when comparing to single precision. What this shows is that the code was executed on the CPU which is equally capable of double precision floating point operations and single precision ones and that the compiler optimizations had the same effects in both cases.
+Figure 10 shows that when double precision was used, there were no significant difference in either the behaviour nor the execution time when compared to single precision. What this shows is that the code was executed on the CPU which is equally capable of double precision floating point operations and single precision ones and that the compiler optimizations had the same effects in both cases.
 
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/float.png}
-    \caption{Vector field of equation 2}
+    \caption{Performance of the program using single precision}
 \end{figure}
 
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.6]{images/double.png}
-    \caption{Vector field of equation 2}
+    \caption{Performance of the program using double precision}
 \end{figure}
 
 
@@ -322,19 +322,20 @@ Figure 10 shows that when double precision was used, there were no significant d
 The execution times for different landscape masks can be seen in figure 11. There seems to be a clear correlation between the amount of land (represented by 1s) and the execution time, which is perfectly logical. Nonetheless there was no evidence that the structure of the islands influenced execution time, but more experimentation is needed to determine this (which was not possible to do given the time constraints of the project).
 
 
-\begin{figure}[hb]
+\begin{figure}[]
     \centering
-    \includegraphics[scale=0.3]{images/bargraph.png}
-    \caption{Vector field of equation 2}
+    \includegraphics[scale=0.25]{images/bargraph.png}
+    \caption{Performance of the program using different landscape masks}
 \end{figure}
 
+%\clearpage
 
 \subsection{Profiling}
 
 GNU GProf was utilized for profiling the software. The compute function (part of the PDE Kernel) took the majority of execution time. However, the running time of readmap function rose when increasing matrix size. When the input was a $50\times 50$ matrix, the compute function took $99.99\%$ percent of CPU time for the process. When the input was a $2000\times 2000$ x matrix, the percentage of time spent on the compute function was much less than the time spent for the small matrix. 
 
 This behaviour was actually expected beforehand, but it still tells us that all the optimization efforts must be used in the compute function and disk access should be avoided as much as possible, since this is (by far) the main source of overhead when landscape size is augmented.
-
+%\clearpage
 
 %
 %%DoubleFlags
@@ -346,7 +347,7 @@ This behaviour was actually expected beforehand, but it still tells us that all 
 %\end{figure}
 %
 %
-%Figure 9 shows the running time of different optimization options, utilizing double precision. %It is noticeable that with no optimization flags the performance was not only much slower than when utilizing any of the flags, but also the running time increased far more rapidly than in the other cases. The performance between the O1, O2, and O3 was very similar, predictably O3 being the best, although there were no significant 
+%figure 9 shows the running time of different optimization options, utilizing double precision. %It is noticeable that with no optimization flags the performance was not only much slower than when utilizing any of the flags, but also the running time increased far more rapidly than in the other cases. The performance between the O1, O2, and O3 was very similar, predictably O3 being the best, although there were no significant 
 %
 %
 %Test 1: different size of landscape	
@@ -377,7 +378,7 @@ This behaviour was actually expected beforehand, but it still tells us that all 
 %Big island (a 1500x1500 island in center)
 %All land
 
-\clearpage
+%\clearpage
 
 \section{Conclusions}
 
@@ -389,7 +390,7 @@ The coding standards used in the project ensured easy readability and quick dete
  
 One unexpected aspect was the particular importance of automated error testing since it allowed us to realize some aspects of the behaviour that would have otherwise been impossible (at least given the time frame and other projects and course works), like the role of the time step in the convergence algorithm.
 
-The use of performance analysis tools was proved to be very helpful in finding the bottlenecks within the code. A huge performance improvement was achieved by avoiding expensive operations such as copying segments of memory repeatedly in a loop. Use of tools like gdb was also quite useful in debugging segmentation faults.
+The use of performance analysis tools was very helpful for finding the bottlenecks within the code. A huge performance improvement was achieved by avoiding expensive operations such as copying segments of memory repeatedly in a loop. Use of tools like gdb was also quite useful in debugging segmentation faults.
 
 By working on this project, every member in the team was able to use the various tools and techniques taught as part of the Programming Skills course, given that some of the main stages of development were shared among all the members.
  
