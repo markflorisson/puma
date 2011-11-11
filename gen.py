@@ -1,3 +1,8 @@
+"""
+Simple script to generate some matrices of certain sizes to do performance
+tests.
+"""
+
 L = [50, 100, 200, 400, 800, 1000, 1200, 1400, 1600, 1800, 2000]
 
 for x in L:
